@@ -8,7 +8,8 @@ This module contains the code for putting heritage places into a search index.
 from elasticsearch import Elasticsearch
 
 ES_HOST = "192.168.10.200"
-
+ES_INDEX = "eheritage"
+ES_DOCTYPE = "heritage_place"
 es = Elasticsearch(ES_HOST)
 
 
@@ -19,7 +20,7 @@ def add_heritage_place(place):
     """
     try:
         id = "%s-%s" % (place['state'], place['id'])
-        result = es.index(index="eheritage", doc_type='heritage_place', id=id, body=place)
+        result = es.index(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id, body=place)
         print result
     except AttributeError as e:
         print e
@@ -28,6 +29,11 @@ def add_heritage_place(place):
 
     return True
 
+
+def keyword_search(search_term):
+    res = es.search(index=ES_INDEX, body={"query": {"match": {"_all": search_term}}})
+
+    return res
 
 
 if __name__ == "__main__":
