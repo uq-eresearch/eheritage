@@ -141,6 +141,28 @@ Features:
 
 Can download spatial data from [NSW Spatial Data][http://www.planning.nsw.gov.au/spatial-data-download]
 
+## Brisbane
+http://heritage.brisbane.qld.gov.au/heritage_register/
+
+## Townsville
+http://www.townsville.qld.gov.au/townsville/heritage/Pages/heritagedatabase.aspx
+
+
+## Australian Heritage Database
+http://www.environment.gov.au/topics/heritage/publications-and-resources/australian-heritage-database
+
+The database includes:
+* places in the World Heritage List
+* places in the National Heritage List
+* places in the Commonwealth Heritage list
+* places in the Register of the National Estate
+* places in the List of Overseas Places of Historic Significance to Australia
+* places under consideration, or that may have been considered for, any one of these lists.
+
+
+
+2100 places.
+
 
 
 ## References
