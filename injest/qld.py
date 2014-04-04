@@ -2,10 +2,21 @@ from lxml import etree
 
 
 def parse_ahpi_xml(path, callback):
+    """
+    Parses the AHPI XML export format of the queensland heritage register
+    and calls a function with each heritage place.
+
+    :param path: The location of a heritage_places xml file.
+    :param callback: Function to handle each heritage place dict.
+    """
     ns = {'hp': 'http://www.heritage.gov.au/ahpi/heritage_places'}
 
     tree = etree.parse(path)
     root = tree.getroot()
+    count = {
+        "success": 0,
+        "failed": 0,
+    }
     for hp_element in root.xpath('//hp:heritage_place', namespaces=ns):
         hp = {
             "date_created": hp_element.get('date_created'),
@@ -25,7 +36,12 @@ def parse_ahpi_xml(path, callback):
             "url": hp_element.xpath('hp:url', namespaces=ns)[0].text,
         }
 
-        callback(hp)
+        if callback(hp):
+            count['success'] += 1
+        else:
+            count['failed'] += 1
+    return count
+
 
 
 
@@ -34,6 +50,7 @@ if __name__ == "__main__":
 
     hp_filename = "/mnt/groups/maenad/activities/e-Heritage/QLD/heritage_list.xml"
 
-    parse_ahpi_xml(hp_filename, myPrint)
+    result = parse_ahpi_xml(hp_filename, myPrint)
+    print result
 
 
