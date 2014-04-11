@@ -30,10 +30,42 @@ def add_heritage_place(place):
     return True
 
 
-def keyword_search(search_term):
-    res = es.search(index=ES_INDEX, body={"query": {"match": {"_all": search_term}}})
+def keyword_search(search_term, page=1):
+    es_size = 10
+    es_from = (page-1) * es_size
+    query = {
+        "from": es_from,
+        "size": es_size,
+        "query": {
+            "match": {
+                "_all": search_term
+            }
+        },
+        "facets" : {
+            "state" : { "terms" : {"field" : "state"}
+        },
+    }
+    res = es.search(index=ES_INDEX, body=query)
 
     return res
+
+def get_heritage_place(id):
+    res = es.get(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id)
+    return res
+
+
+def get_all_locations():
+    query = {
+        "size": 10000,
+        "fields": ("latitude", "longitude", "name"),
+        "filter": {
+            "exists": {"field": "latitude"}
+        }
+    }
+    res = es.search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
+
+    return res
+
 
 
 if __name__ == "__main__":

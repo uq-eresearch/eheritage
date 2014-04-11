@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<h2>Search</h2>
+
+<div class="row">
+{{ pagination.info|safe }}
+{{ pagination.links|safe }}
+</div>
+
+<div class="row">
+<ul>
+{% for hit in results.hits %}
+<li>
+    <div class="result">
+        <b>[{{ hit._source.state }}] {{ hit._source.name }}</b> - <em>{{ hit._source.address }}</em>
+         - <a href="{{ url_for('get_record', id=hit._id) }}">json</a><br>
+<!--         <p>
+            {{ hit._source.description|safe }}
+        </p> -->
+    </div>
+</li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="row">
+<p>
+    {{ results.total }} Results
+</p>
+</div>
+
+
+{% endblock %}

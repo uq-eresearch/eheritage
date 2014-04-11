@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+
+
+<div class="row">
+    <div id="map"></div>
+</div>
+
+
+<script>
+
+var map = L.map('map');
+
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
+
+
+var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    subdomains: '1234'
+});
+
+map.setView([-27.45, 139], 4);
+map.addLayer(MapQuestOpen_OSM);
+
+
+var markers = new L.MarkerClusterGroup({ chunkedLoading: true });
+
+jQuery.ajax({
+    url: "{{ url_for('locations_json') }}",
+    dataType: "json"
+}).done(function(locations) {
+    for (var i = 0; i < locations.hits.hits.length; i++) {
+        var hit = locations.hits.hits[i];
+        var marker = L.marker(
+            L.latLng(hit.fields.latitude[0], hit.fields.longitude[0]),
+            {
+                title: hit.fields.name[0],
+                url: "/record/" + hit['_id']
+            }
+        );
+        marker.on('click', onClick);
+        markers.addLayer(marker);
+    }
+    map.addLayer(markers);
+    map.fitBounds(markers.getBounds());
+
+});
+
+function onClick(e) {
+    window.open(this.options.url);
+}
+
+
+
+</script>
+
+{% endblock %}
