@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Australian E-Heritage</title>
+    <link rel=stylesheet type=text/css href="/static/bootstrap.css">
+    <link rel=stylesheet type=text/css href="/static/style.css">
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+  </head>
+  <body>
+    <div class="container">
+        <h1 class="logo">Australian E-Heritage</h1>
+
+
+<script type="text/x-handlebars">
+
+        <ul class="nav nav-pills">
+            <li>{{#link-to 'index'}}index{{/link-to}}</li>
+            <li>{{#link-to 'search'}}Search{{/link-to}}</li>
+        </ul>
+    {{outlet}}
+</script>
+
+
+<script type="text/x-handlebars" id="search">
+<h1>Search</h1>
+
+<p>Keyword: {{input type="text" value=keywordField}}</p>
+<p>Address: {{input type="address" value=address}}</p>
+<p><button {{action 'search'}}>Search</button></p>
+
+<p>Found {{count}} results</p>
+<p>
+  Page: 
+  {{#each n in pages}}
+    {{linkTo n (query-params page=n)}}
+  {{/each}}
+  of {{pages.length}}
+</p>
+
+<p>
+  {{#if previousPage}}
+    {{link-to 'Previous' (query-params page=previousPage)}}
+  {{else}}
+    Previous
+  {{/if}}
+  
+  {{#if nextPage}}
+    {{link-to 'Next' (query-params page=nextPage)}}
+  {{else}}
+    Next
+  {{/if}}
+</p>
+
+<div class="row">
+<ul>
+{{#each results}}
+<li>
+    <div class="result">
+        <b><a {{bindAttr href="_source.url" }} target="_blank">[{{ _source.state }}] {{ _source.name }}</a></b></em><br>
+    </div>
+</li>
+{{/each}}
+</ul>
+</div>
+</script>
+
+
+    </div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.js"></script>
+<script>
+EmberENV = {FEATURES: {'query-params-new': true}};
+</script>
+<script src="http://builds.emberjs.com/canary/ember.js"></script>
+<script src="/static/app.js"></script>
+  </body>
+</html>
