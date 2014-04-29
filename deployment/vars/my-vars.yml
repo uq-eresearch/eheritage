@@ -9,7 +9,8 @@ elasticsearch_node_max_local_storage_nodes: 1
 elasticsearch_index_mapper_dynamic: "true"
 elasticsearch_memory_bootstrap_mlockall: "true"
 elasticsearch_install_java: "true"
-#elasticsearch_plugins:
+elasticsearch_plugins:
+ - { name: 'elasticsearch/marvel/latest' }
 #  - { name: 'elasticsearch/elasticsearch-mapper-attachments/1.9.0' }
 #  - { name: 'com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.1' }
 #  - { name: 'facet-script', url: 'http://dl.bintray.com/content/imotov/elasticsearch-plugins/elasticsearch-facet-script-1.1.2.zip' }
