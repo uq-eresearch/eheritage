@@ -14,5 +14,13 @@
     font-size: 150%;
 }
 
+ul li .active {
+    font-weight: bold;
+}
 
 #map { height: 460px; }
+
+.ember-view.active {
+    font-weight: bold;
+
+}

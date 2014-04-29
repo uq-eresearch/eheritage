@@ -12,10 +12,10 @@
 
 <div class="row">
 <ul>
-{% for hit in results.hits %}
+{% for hit in results %}
 <li>
     <div class="result">
-        <b>[{{ hit._source.state }}] {{ hit._source.name }}</b> - <em>{{ hit._source.address }}</em>
+        <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name }}</a></b></em>
          - <a href="{{ url_for('get_record', id=hit._id) }}">json</a><br>
 <!--         <p>
             {{ hit._source.description|safe }}
