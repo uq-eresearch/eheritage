@@ -38,7 +38,7 @@ jQuery.ajax({
     for (var i = 0; i < locations.hits.hits.length; i++) {
         var hit = locations.hits.hits[i];
         var marker = L.marker(
-            L.latLng(hit.fields.latitude[0], hit.fields.longitude[0]),
+            L.latLng(hit.fields["geolocation.lat"][0], hit.fields["geolocation.lon"][0]),
             {
                 title: hit.fields.name[0],
                 url: "/record/" + hit['_id']
