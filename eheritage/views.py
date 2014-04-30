@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect
 from flask import jsonify, request, send_file
 from flask.ext.paginate import Pagination
+from flask import current_app
 
 from injest.search_index import simple_search, get_heritage_place, get_all_locations
 from injest.search_index import get_elasticutils_query, get_geogrid
@@ -10,9 +11,11 @@ from forms import SearchForm
 def request_wants_json():
     best = request.accept_mimetypes \
         .best_match(['application/json', 'text/html'])
-    return best == 'application/json' and \
+    mimetype_wants = best == 'application/json' and \
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
+
+    return mimetype_wants or 'json' in request.args
 
 @app.route("/")
 def index():
