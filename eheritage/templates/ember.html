@@ -12,17 +12,19 @@
 
   </head>
   <body>
-    <div class="container">
-        <h1 class="logo">Australian E-Heritage</h1>
 
 
 <script type="text/x-handlebars">
+    <div class="container">
+        <h1 class="logo">Australian E-Heritage</h1>
 
         <ul class="nav nav-pills">
             <li>{{#link-to 'index'}}index{{/link-to}}</li>
             <li>{{#link-to 'search'}}Search{{/link-to}}</li>
         </ul>
     {{outlet}}
+
+    </div>
 </script>
 
 
@@ -37,7 +39,7 @@
 <p>
   Page: 
   {{#each n in pages}}
-    {{linkTo n (query-params page=n)}}
+    {{link-to n (query-params page=n)}}
   {{/each}}
   of {{pages.length}}
 </p>
@@ -61,7 +63,7 @@
 {{#each results}}
 <li>
     <div class="result">
-        <b><a {{bindAttr href="_source.url" }} target="_blank">[{{ _source.state }}] {{ _source.name }}</a></b></em><br>
+        <b><a {{bind-attr href=_source.url }} target="_blank">[{{ _source.state }}] {{ _source.name }}</a></b></em><br>
     </div>
 </li>
 {{/each}}
@@ -69,8 +71,6 @@
 </div>
 </script>
 
-
-    </div>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.js"></script>
 <script>
