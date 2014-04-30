@@ -204,6 +204,23 @@ def get_all_locations():
 
     return res
 
+def get_geogrid(precision):
+    """
+    """
+    query = {
+        "aggregations" : {
+            "geogrid" : {
+                "geohash_grid" : {
+                    "field" : "geolocation",
+                    "precision" : precision
+                }
+            }
+        }
+    }
+    res = es.search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
+
+    return res
+
 
 def delete_index():
     """Delete the entire index of heritage places

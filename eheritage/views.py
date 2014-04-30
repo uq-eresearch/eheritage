@@ -3,7 +3,7 @@ from flask import jsonify, request, send_file
 from flask.ext.paginate import Pagination
 
 from injest.search_index import simple_search, get_heritage_place, get_all_locations
-from injest.search_index import get_elasticutils_query
+from injest.search_index import get_elasticutils_query, get_geogrid
 from eheritage import app
 from forms import SearchForm
 
@@ -83,6 +83,11 @@ def search_json(search_term):
 @app.route("/locations.json")
 def locations_json():
     results = get_all_locations()
+    return jsonify(results)
+
+@app.route("/geogrid.json")
+def geogrid_json():
+    results = get_geogrid(3)
     return jsonify(results)
 
 @app.route("/map")
