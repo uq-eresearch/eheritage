@@ -42,8 +42,9 @@ def search(search_term=None):
     try:
         page = int(request.args.get('page', 1))
 
-        start = page * PAGE_SIZE
+        start = (page -1) * PAGE_SIZE
         to = start + PAGE_SIZE
+        print "from: %s to: %s" % (start, to)
 
         query = query[start:to]
 
