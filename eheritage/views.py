@@ -17,6 +17,7 @@ def request_wants_json():
 
     return mimetype_wants or 'json' in request.args
 
+
 @app.route("/")
 def index():
     form = SearchForm()
@@ -41,6 +42,7 @@ def search(search_term=None):
     if address_term:
         query = query.query(**{'addresses.lga_name': address_term})
 
+    query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects')
 
     try:
         page = int(request.args.get('page', 1))
@@ -55,21 +57,23 @@ def search(search_term=None):
         page = 1
 
     results = query.execute()
-
+    
     pagination = Pagination(page=page, total=results.count, css_framework='bootstrap3')
 
     if request_wants_json():
         # return jsonify(items=[x.to_json() for x in items])
-        # import ipdb; ipdb.set_trace()
         return jsonify({
             'results': results.results,
             'count': results.count,
-            'took': results.took
+            'took': results.took,
+            'facets': results.facets
             })
     return render_template("results.html",
+        count = results.count,
         results = results.results,
         search_term = search_term,
         address_term = address_term,
+        facets = results.facets,
         pagination=pagination)
 
 

@@ -3,33 +3,34 @@
 
 {% block content %}
 
-<h2>Search</h2>
-
 <div class="row">
-{{ pagination.info|safe }}
-{{ pagination.links|safe }}
-</div>
-
-<div class="row">
-<ul>
-{% for hit in results %}
-<li>
-    <div class="result">
-        <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name }}</a></b></em>
-         - <a href="{{ url_for('get_record', id=hit._id) }}">json</a><br>
-<!--         <p>
-            {{ hit._source.description|safe }}
-        </p> -->
+    <div class="col-md-3">
+        {% for facet in ['addresses.suburb', 'state', 'architects'] %}
+            <b>{{facet}}</b><br>
+            <ul>
+            {% for term in facets[facet].terms %}
+            <li>{{ term.term|capitalize }} ({{ term.count }})</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
     </div>
-</li>
-{% endfor %}
-</ul>
-</div>
 
-<div class="row">
-<p>
-    {{ results.total }} Results
-</p>
+
+    <div class="col-md-9">
+
+        {{ pagination.info|safe }}
+        <ul>
+        {% for hit in results %}
+        <li>
+                <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name }}</a></b></em>
+                 - <a href="{{ url_for('get_record', id=hit._id) }}">json</a><br>
+
+        </li>
+        {% endfor %}
+        </ul>
+
+        {{ pagination.links|safe }}
+    </div>
 </div>
 
 
