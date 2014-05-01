@@ -21,7 +21,7 @@ ul li .active {
 /*
  * MAP STYLES
  */
-#map { height: 460px; }
+#map { height: 550px; }
 
 .info {
     padding: 6px 8px;
@@ -35,6 +35,18 @@ ul li .active {
     margin: 0 0 5px;
     color: #777;
 }
+
+/*
+Colour List from colorschemedesigner.com
+#086FA1 - middle
+#235D79 - darker
+#034769 - darkest
+#3CA0D0 - lighter
+#63ADD0 - lightest
+
+ */
+
+
 
 /*
  * EMBER STYLES
