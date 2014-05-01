@@ -40,23 +40,22 @@
             {% endwith %}
         </div>
 
+    <form action="{{ url_for('search') }}" method="get" name="search">
         <div class="row">
             <div class="col-md-10">
-                <form action="{{ url_for('search') }}" method="get" name="search">
                     <p>
                         Please enter your Search Terms:<br>
                         <input name="keyword" size="80" type="text" value="{{search_term}}">
-                        <br>
-                        <b>Address:</b><input name="address" size="80" type="text" value="{{address_term}}">
+                        <input type="submit" value="Search">
                     </p>
-                    <p><input type="submit" value="Search"></p>
-                </form>
             </div>
         </div>
 
 
         {% block content %}
         {% endblock %}
+    </form>
+
     </div>
   </body>
 </html>

@@ -5,11 +5,12 @@
 
 <div class="row">
     <div class="col-md-3">
+        <b>Address:</b><input name="address" size="25" type="text" value="{{address_term}}">
         {% for facet in ['addresses.suburb', 'state', 'architects'] %}
             <b>{{facet}}</b><br>
             <ul>
             {% for term in facets[facet].terms %}
-            <li>{{ term.term|capitalize }} ({{ term.count }})</li>
+            <li>{{ term.term }} ({{ term.count }})</li>
             {% endfor %}
             </ul>
         {% endfor %}
