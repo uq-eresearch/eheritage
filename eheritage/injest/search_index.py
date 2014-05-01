@@ -192,7 +192,7 @@ def get_heritage_place(id):
     return res
 
 
-def get_all_locations():
+def get_locations(extra_query={}):
     query = {
         "size": 10000,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
@@ -200,11 +200,13 @@ def get_all_locations():
             "exists": {"field": "geolocation"}
         }
     }
+    if extra_query:
+        query['query'] = extra_query
     res = es.search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
 
     return res
 
-def get_geogrid(precision):
+def get_geogrid(precision, extra_query={}):
     """
     """
     query = {
@@ -217,6 +219,8 @@ def get_geogrid(precision):
             }
         }
     }
+    if extra_query:
+        query['query'] = extra_query
     res = es.search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
 
     return res

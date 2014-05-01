@@ -22,7 +22,8 @@
 
         <ul class="nav nav-pills">
             <li><a href="/">Home</a></li>
-            <li><a href="/map">Map</a></li>
+            <li><a href="/search/?{{request.query_string}}">Search</a>
+            <li><a href="/map?{{request.query_string}}">Map</a></li>
         </ul>
 
 
@@ -40,12 +41,12 @@
             {% endwith %}
         </div>
 
-    <form action="{{ url_for('search') }}" method="get" name="search">
+    <form  method="get" name="search">
         <div class="row">
             <div class="col-md-10">
                     <p>
                         Please enter your Search Terms:<br>
-                        <input name="keyword" size="80" type="text" value="{{search_term}}">
+                        <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}">
                         <input type="submit" value="Search">
                     </p>
             </div>

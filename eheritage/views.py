@@ -3,7 +3,7 @@ from flask import jsonify, request, send_file
 from flask.ext.paginate import Pagination
 from flask import current_app
 
-from injest.search_index import simple_search, get_heritage_place, get_all_locations
+from injest.search_index import simple_search, get_heritage_place, get_locations
 from injest.search_index import get_elasticutils_query, get_geogrid
 from eheritage import app
 from forms import SearchForm
@@ -29,16 +29,22 @@ def ember():
     return send_file("templates/ember.html")
 PAGE_SIZE = 10
 
-@app.route("/search/")
-def search(search_term=None):
+def prepare_keyword_search():
     search_term = request.args.get('keyword', '')
-    address_term = request.args.get('address', '')
-
     query = get_elasticutils_query()
-
 
     if search_term:
         query = query.query(_all=search_term)
+
+    return query
+
+@app.route("/search/")
+def search():
+
+    query = prepare_keyword_search()
+
+    address_term = request.args.get('address', '')
+
     if address_term:
         query = query.query(**{'addresses.lga_name': address_term})
 
@@ -71,7 +77,6 @@ def search(search_term=None):
     return render_template("results.html",
         count = results.count,
         results = results.results,
-        search_term = search_term,
         address_term = address_term,
         facets = results.facets,
         pagination=pagination)
@@ -87,18 +92,34 @@ def search_json(search_term):
     results = simple_search(search_term)
     return jsonify(simple_search(search_term)['hits'])
 
+
+def generate_location_query():
+    search_term = request.args.get('keyword', '')
+    if search_term:
+        return {
+            "match": {
+                "_all": search_term
+            }
+        }
+    else:
+        return None
+
 @app.route("/locations.json")
 def locations_json():
-    results = get_all_locations()
+    query = generate_location_query()
+    results = get_locations(query)
     return jsonify(results)
 
 @app.route("/geogrid.json")
 def geogrid_json():
-    results = get_geogrid(3)
+    query = generate_location_query()
+    results = get_geogrid(3, query)
     return jsonify(results)
 
 @app.route("/map")
 def map():
-    return render_template("map.html")
+    query = prepare_keyword_search()
+    num_results = query.count()
 
-
+    return render_template("map.html",
+        count=num_results)
