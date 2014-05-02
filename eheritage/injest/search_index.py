@@ -322,7 +322,7 @@ def stream_vic_data():
     num = vic.get_number_of_places()
     print "Importing %d Victorian Heritage Places" % num
 
-    for ok, result in progress.bar(streaming_bulk(es, 
+    for ok, result in progress.bar(streaming_bulk(get_es(), 
         make_es_index_obj(vic.all_places())), width=80, expected_size=num):
         if not ok:
             action, result = result.popitem()
