@@ -34,7 +34,7 @@ def prepare_keyword_search():
     query = get_elasticutils_query()
 
     if search_term:
-        query = query.query(_all=search_term)
+        query = query.query(_all__match=search_term)
 
     return query
 
@@ -46,7 +46,7 @@ def search():
     address_term = request.args.get('address', '')
 
     if address_term:
-        query = query.query(**{'addresses.lga_name': address_term})
+        query = query.query(**{'addresses.lga_name__match': address_term})
 
     query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects')
 
