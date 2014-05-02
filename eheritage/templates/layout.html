@@ -42,15 +42,6 @@
         </div>
 
     <form  method="get" name="search">
-        <div class="row">
-            <div class="col-md-10">
-                    <p>
-                        Please enter your Search Terms:<br>
-                        <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}">
-                        <input type="submit" value="Search">
-                    </p>
-            </div>
-        </div>
 
 
         {% block content %}
