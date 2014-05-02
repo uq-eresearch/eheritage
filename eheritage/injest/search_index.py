@@ -68,6 +68,7 @@ class GeoS(S):
 
 
 def create_index():
+    ES_INDEX = current_app.config['ES_INDEX']
     body = {
         "mappings": {
             "heritage_place": {
@@ -144,6 +145,9 @@ def add_heritage_place(place):
 
     :param place: Dictionary defining a heritage place.
     """
+
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
     try:
         id = "%s-%s" % (place['state'], place['id'])
         result = get_es().index(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id, body=place)
@@ -157,6 +161,8 @@ def add_heritage_place(place):
 
 
 def simple_search(keyword_term, page=1, other_fields={}):
+    ES_INDEX = current_app.config['ES_INDEX']
+
     es_size = 10
     es_from = (page-1) * es_size
     matches = {
@@ -183,6 +189,8 @@ def advanced_search(search_terms, page=1):
     """
     search_terms: a dictionary of search terms
     """
+    ES_INDEX = current_app.config['ES_INDEX']
+
     es_size = 10
     es_from = (page-1) * es_size
     query = {
@@ -206,11 +214,17 @@ def advanced_search(search_terms, page=1):
 def get_heritage_place(id):
     """Retrieve a single heritage place
     """
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
+
     res = get_es().get(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id)
     return res
 
 
 def get_locations(extra_query={}):
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
+    
     query = {
         "size": 10000,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
@@ -227,6 +241,9 @@ def get_locations(extra_query={}):
 def get_geogrid(precision, extra_query={}):
     """
     """
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
+    
     query = {
         "aggregations" : {
             "geogrid" : {
@@ -248,6 +265,8 @@ def delete_index():
     """Delete the entire index of heritage places
     DANGER!!
     """
+    ES_INDEX = current_app.config['ES_INDEX']
+    
     return get_es().indices.delete(ES_INDEX)
 
 from clint.textui import progress
@@ -268,6 +287,9 @@ def load_qld_data():
 def make_es_index_obj(docs):
     """Generator function that turns ES _source documents into
     index documents suitable for streaming_bulk"""
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
+    
 
     for doc in docs:
         insert_doc = {

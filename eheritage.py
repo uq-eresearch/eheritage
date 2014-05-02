@@ -21,6 +21,7 @@ from docopt import docopt
 import clint
 import logging
 from eheritage.injest import search_index
+from eheritage import app
  
 
 def setup_logging():
@@ -44,20 +45,21 @@ if __name__ == '__main__':
 
     setup_logging()
 
-    if args['create_index']:
-        print search_index.create_index()
+    with app.app_context():
+        if args['create_index']:
+            print search_index.create_index()
 
-    elif args['delete_index']:
-        print search_index.delete_index()
+        elif args['delete_index']:
+            print search_index.delete_index()
 
-    elif args['get_index_version']:
-        print 'Not Implemented!'
+        elif args['get_index_version']:
+            print 'Not Implemented!'
 
-    elif args['index']:
+        elif args['index']:
 
-        if args['qld']:
-            print search_index.load_qld_data()
+            if args['qld']:
+                print search_index.load_qld_data()
 
-        elif args['vic']:
-            print search_index.stream_vic_data()
+            elif args['vic']:
+                print search_index.stream_vic_data()
 
