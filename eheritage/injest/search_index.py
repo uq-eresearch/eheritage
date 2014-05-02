@@ -273,10 +273,8 @@ from clint.textui import progress
 import json
 import traceback
 
-def load_qld_data():
+def load_qld_data(qld_filename):
     from qld import parse_ahpi_xml
-
-    qld_filename = "/mnt/groups/maenad/activities/e-Heritage/QLD/heritage_list.xml"
 
     qld_places = parse_ahpi_xml(qld_filename)
 
