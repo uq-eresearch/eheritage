@@ -4,6 +4,17 @@
 {% block content %}
 
 <div class="row">
+    <div class="col-md-10">
+            <p>
+                Please enter your Search Terms:<br>
+                <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}">
+                <input type="submit" value="Search">
+            </p>
+    </div>
+</div>
+
+        
+<div class="row">
     <div class="col-md-3">
         <b>Address:</b><input name="address" size="25" type="text" value="{{address_term}}">
         {% for facet in ['addresses.suburb', 'state', 'architects'] %}

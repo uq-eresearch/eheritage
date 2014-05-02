@@ -43,7 +43,7 @@ def search():
     address_term = request.args.get('address', '')
 
     if address_term:
-        query = query.query(**{'addresses.lga_name__match': address_term})
+        query = query.query(**{'address__match': address_term})
 
     query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects')
 
