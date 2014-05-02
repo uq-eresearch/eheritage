@@ -3,7 +3,11 @@ from eheritage.utils import IterableAwareEncoder
 from flask.ext.assets import Environment, Bundle
 
 app = Flask(__name__)
-app.config.from_object('config')
+
+
+app.config.from_object('eheritage.default_settings')
+app.config.from_envvar('EHERITAGE_SETTINGS', silent=True)
+
 
 
 # When I'm ready to fix this with bower and stuff
@@ -19,5 +23,8 @@ css = Bundle('style.css', scss,
     filters='pyscss,cssmin', output='gen/all.css')
 
 app.json_encoder = IterableAwareEncoder
+
+
+
 
 from eheritage import views

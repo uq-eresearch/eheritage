@@ -8,17 +8,34 @@ This module contains the code for putting heritage places into a search index.
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 
+from flask import current_app
 
-ES_HOST = "192.168.10.200"
-ES_INDEX = "eheritage"
-ES_ALIAS = "eheritage"
-ES_DOCTYPE = "heritage_place"
-es = Elasticsearch(ES_HOST)
+from flask import g
 
-from elasticutils import get_es, S
+
+from elasticutils import S
+
+
+def get_es():
+    es = getattr(g, '_es', None)
+    if es is None:
+        ES_HOST = current_app.config['ES_HOST']
+        ES_INDEX = current_app.config['ES_INDEX']
+        ES_ALIAS = current_app.config['ES_ALIAS']
+        ES_DOCTYPE = current_app.config['ES_DOCTYPE']
+        es = g._es = Elasticsearch(ES_HOST)
+    return es
+
+
 
 def get_elasticutils_query():
+    ES_HOST = current_app.config['ES_HOST']
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_ALIAS = current_app.config['ES_ALIAS']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
     return S().es(urls=[ES_HOST]).indexes(ES_INDEX).doctypes(ES_DOCTYPE)
+
+
 
 
 
@@ -119,7 +136,7 @@ def create_index():
             }
         }
     }
-    return es.indices.create(ES_INDEX, body)
+    return get_es().indices.create(ES_INDEX, body)
 
 
 def add_heritage_place(place):
@@ -129,7 +146,7 @@ def add_heritage_place(place):
     """
     try:
         id = "%s-%s" % (place['state'], place['id'])
-        result = es.index(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id, body=place)
+        result = get_es().index(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id, body=place)
         # print result
     except AttributeError as e:
         print e
@@ -158,7 +175,7 @@ def simple_search(keyword_term, page=1, other_fields={}):
             "state" : { "terms" : {"field" : "state"} }
         },
     }
-    res = es.search(index=ES_INDEX, body=query)
+    res = get_es().search(index=ES_INDEX, body=query)
 
     return res
 
@@ -180,7 +197,7 @@ def advanced_search(search_terms, page=1):
             "state" : { "terms" : {"field" : "state"} }
         },
     }
-    res = es.search(index=ES_INDEX, body=query)
+    res = get_es().search(index=ES_INDEX, body=query)
 
     return res
 
@@ -189,7 +206,7 @@ def advanced_search(search_terms, page=1):
 def get_heritage_place(id):
     """Retrieve a single heritage place
     """
-    res = es.get(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id)
+    res = get_es().get(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id)
     return res
 
 
@@ -203,7 +220,7 @@ def get_locations(extra_query={}):
     }
     if extra_query:
         query['query'] = extra_query
-    res = es.search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
+    res = get_es().search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
 
     return res
 
@@ -222,7 +239,7 @@ def get_geogrid(precision, extra_query={}):
     }
     if extra_query:
         query['query'] = extra_query
-    res = es.search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
+    res = get_es().search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
 
     return res
 
@@ -231,7 +248,7 @@ def delete_index():
     """Delete the entire index of heritage places
     DANGER!!
     """
-    return es.indices.delete(ES_INDEX)
+    return get_es().indices.delete(ES_INDEX)
 
 from clint.textui import progress
 import json
