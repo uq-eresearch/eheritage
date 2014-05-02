@@ -282,17 +282,14 @@ def load_qld_data(qld_filename):
         add_heritage_place(place)
 
 
-def make_es_index_obj(docs):
+def make_es_index_obj(docs, es_index, es_doctype):
     """Generator function that turns ES _source documents into
-    index documents suitable for streaming_bulk"""
-    ES_INDEX = current_app.config['ES_INDEX']
-    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
-    
+    index documents suitable for streaming_bulk"""    
 
     for doc in docs:
         insert_doc = {
-            '_index': ES_INDEX,
-            '_type': ES_DOCTYPE,
+            '_index': es_index,
+            '_type': es_doctype,
             '_id': "%s-%s" % (doc['state'], doc['id']),
             '_source': doc
         }
@@ -319,6 +316,7 @@ from elasticsearch.helpers import streaming_bulk
 def stream_vic_data():
     import vic
     ES_INDEX = current_app.config['ES_INDEX']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
 
     num = vic.get_number_of_places()
     print "Importing %d Victorian Heritage Places" % num
@@ -328,8 +326,7 @@ def stream_vic_data():
     for ok, result in progress.bar(
                         streaming_bulk(
                             es, 
-                            make_es_index_obj(vic.all_places()
-                        )
+                            make_es_index_obj(vic.all_places(), ES_INDEX, ES_DOCTYPE)
                       ), width=80, expected_size=num):
         if not ok:
             action, result = result.popitem()
