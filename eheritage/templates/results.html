@@ -23,8 +23,9 @@
         <ul>
         {% for hit in results %}
         <li>
-                <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name }}</a></b></em>
+                <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name }}</a></b>
                  - <a href="{{ url_for('get_record', id=hit._id) }}">json</a><br>
+                 {{ hit._source.location }}
 
         </li>
         {% endfor %}
