@@ -8,7 +8,6 @@ PyYAML==3.11
 SQLAlchemy==0.9.4
 WTForms==1.0.5
 Werkzeug==0.9.4
-Whoosh==2.6.0
 ansible==1.5.3
 argparse==1.2.1
 args==0.1.0
