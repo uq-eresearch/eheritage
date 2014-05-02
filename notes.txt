@@ -1,0 +1,16 @@
+
+
+Visit /map page:
+
+
+
+Submit search to map:
+ - Generate the query, but only perform a count()
+ - Render the map.html, including a link to get json results of the search, and list the number of results
+
+
+
+echo "create database vhd;" | mysql -u root -proot
+echo "grant usage on *.* to vhd@localhost identified by 'vhd';" | mysql -u root -proot
+echo "grant all privileges on vhd.* to vhd@localhost;" | mysql -u root -proot
+zcat vhd_2014_03_14_hermes_9_0_7.sql.gz | mysql -u vhd -pvhd vhd
