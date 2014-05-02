@@ -99,17 +99,18 @@ def create_index():
                         "lat_lon": True,
                         "geohash": True
                     },
+                    "address": { "type": "string" },
                     "addresses": {
                         "type": "object",
                         "properties": {
-                            "street_number": { "type": "string" },
-                            "address": { "type": "string" },
-                            "street_name": { "type": "string" },
-                            "suburb": { "type": "string", "index": "not_analyzed" },
-                            "state": { "type": "string" },
-                            "country": { "type": "string" },
-                            "postcode": { "type": "string" },
-                            "lga_name": { "type": "string", "index": "not_analyzed" },
+                            "street_number": { "type": "string", "copy_to": "address" },
+                            "address": { "type": "string", "copy_to": "address" },
+                            "street_name": { "type": "string", "copy_to": "address" },
+                            "suburb": { "type": "string", "index": "not_analyzed", "copy_to": "address" },
+                            "state": { "type": "string", "copy_to": "address" },
+                            "country": { "type": "string", "copy_to": "address" },
+                            "postcode": { "type": "string", "copy_to": "address" },
+                            "lga_name": { "type": "string", "index": "not_analyzed", "copy_to": "address" },
                         }
 
                     }
