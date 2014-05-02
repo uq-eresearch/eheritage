@@ -318,6 +318,7 @@ def load_vic_data():
 from elasticsearch.helpers import streaming_bulk
 def stream_vic_data():
     import vic
+    ES_INDEX = current_app.config['ES_INDEX']
 
     num = vic.get_number_of_places()
     print "Importing %d Victorian Heritage Places" % num
@@ -326,5 +327,5 @@ def stream_vic_data():
         make_es_index_obj(vic.all_places())), width=80, expected_size=num):
         if not ok:
             action, result = result.popitem()
-            doc_id = '/%s/commits/%s' % (index, result['_id'])
+            doc_id = '/%s/commits/%s' % (ES_INDEX, result['_id'])
             print('Failed to %s document %s: %r' % (action, doc_id, result))
