@@ -6,7 +6,6 @@ from flask import current_app
 from injest.search_index import simple_search, get_heritage_place, get_locations
 from injest.search_index import get_elasticutils_query, get_geogrid
 from eheritage import app
-from forms import SearchForm
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -20,9 +19,7 @@ def request_wants_json():
 
 @app.route("/")
 def index():
-    form = SearchForm()
-    return render_template("index.html",
-        form = form)
+    return render_template("index.html")
 
 @app.route("/ember/")
 def ember():
