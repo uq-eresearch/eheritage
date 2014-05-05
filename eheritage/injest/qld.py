@@ -19,7 +19,7 @@ def parse_ahpi_xml(path):
             "id": hp_element.get('id'),
             "name": hp_element.xpath('hp:name', namespaces=ns)[0].text,
             "addresses": [{
-                "address": hp_element.xpath('hp:address', namespaces=ns)[0].text,
+                "street_name": hp_element.xpath('hp:address', namespaces=ns)[0].text,
                 "lga_name": hp_element.xpath('hp:lga', namespaces=ns)[0].text,
                 "suburb": hp_element.xpath('hp:town', namespaces=ns)[0].text,
                 "state": hp_element.xpath('hp:state', namespaces=ns)[0].text,
