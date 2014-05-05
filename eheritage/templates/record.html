@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h1>{{ record.name }}</h1>
+
+        <h2>Address</h2>
+        {% for address in record.addresses %}
+        <p>
+            {{address.street_number}} {{address.street_name}}<br>
+            {{address.suburb}}<br>
+            {{address.lga_name}}, {{record.state}}, {{address.postcode}}
+        </p>
+        {% endfor %}
+
+
+        <h2>Description</h2>
+        <p>
+            {{ record.description|safe }}
+        </p>
+
+        <h2>Significance</h2>
+        <p>
+            {{ record.significance|safe }}
+        </p>
+
+        <h2>URL</h2>
+        <p>
+            <a href="{{record.url}}">{{record.url}}</a>
+        </p>
+    </div>
+</div>
+
+
+{% endblock %}

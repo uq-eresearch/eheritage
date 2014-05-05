@@ -82,6 +82,12 @@ def search():
 @app.route("/record/<id>")
 def get_record(id):
     result = get_heritage_place(id)
+    return render_template("record.html",
+        record = result['_source'])
+
+@app.route("/record/<id>.json")
+def get_record_json(id):
+    result = get_heritage_place(id)
     return jsonify(result['_source'])
 
 @app.route("/search/<search_term>.json")
