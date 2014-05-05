@@ -101,6 +101,8 @@ def massage_before_indexing(place):
     place['country'] = 'Australia'
     place['name'] = place['place_name']
     
+    for address in place['addresses']:
+        address['state'] = 'VIC'
 
 
     try:
