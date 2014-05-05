@@ -61,7 +61,11 @@ def search():
 
     results = query.execute()
     
-    pagination = Pagination(page=page, total=results.count, css_framework='bootstrap3')
+    pagination = Pagination(
+        page=page,
+        total=results.count,
+        css_framework='bootstrap3',
+        display_msg='displaying records <b>{start} - {end}</b> of <b>{total}</b>')
 
     if request_wants_json():
         # return jsonify(items=[x.to_json() for x in items])
