@@ -6,6 +6,7 @@ from flask import current_app
 from injest.search_index import simple_search, get_heritage_place, get_locations
 from injest.search_index import get_elasticutils_query, get_geogrid
 from eheritage import app
+import elasticutils.utils
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -31,7 +32,7 @@ def prepare_keyword_search():
     query = get_elasticutils_query()
 
     if search_term:
-        query = query.query(_all__match=search_term)
+        query = query.query(_all__match_and=search_term)
 
     return query
 
@@ -43,7 +44,7 @@ def search():
     address_term = request.args.get('address', '')
 
     if address_term:
-        query = query.query(**{'address__match': address_term})
+        query = query.query(**{'address__match_phrase': address_term})
 
     query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects')
 
@@ -61,6 +62,8 @@ def search():
 
     results = query.execute()
     
+    print elasticutils.utils.to_json(query.build_search())
+
     pagination = Pagination(
         page=page,
         total=results.count,

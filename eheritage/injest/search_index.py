@@ -27,19 +27,17 @@ def get_es():
     return es
 
 
+class EHeritageS(S):
+    def process_query_match_and(self, key, val, action):
+        return {
+            'match': {
+                key: {
+                    'query': val,
+                    'operator': 'and'
+                }
+            }
+        }
 
-def get_elasticutils_query():
-    ES_HOST = current_app.config['ES_HOST']
-    ES_INDEX = current_app.config['ES_INDEX']
-    ES_ALIAS = current_app.config['ES_ALIAS']
-    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
-    return S().es(urls=[ES_HOST]).indexes(ES_INDEX).doctypes(ES_DOCTYPE)
-
-
-
-
-
-class GeoS(S):
     def process_filter_geoboundingbox(self, key, val, action):
         """
         http://elasticutils.readthedocs.org/en/latest/api.html#elasticutils.S
@@ -63,7 +61,15 @@ class GeoS(S):
         }
         return geofilter
 
-        #return {'funkyfilter': {'field': key, 'value': val}}
+
+
+def get_elasticutils_query():
+    ES_HOST = current_app.config['ES_HOST']
+    ES_INDEX = current_app.config['ES_INDEX']
+    ES_ALIAS = current_app.config['ES_ALIAS']
+    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
+    return EHeritageS().es(urls=[ES_HOST]).indexes(ES_INDEX).doctypes(ES_DOCTYPE)
+
 
 
 
