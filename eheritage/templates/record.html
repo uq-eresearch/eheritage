@@ -16,6 +16,24 @@
         </p>
         {% endfor %}
 
+        <h2>Architectural Styles</h2>
+        <p>
+        {% for style in record.architectural_styles %}
+        {{style}}<br>
+        {% endfor %}
+        </p>
+
+        <h2>Construction Period</h2>
+        <p>
+            {{record.construction_start}} - {{record.construction_end}}
+        </p>
+
+        <h2>Architects</h2>
+        <p>
+            {% for architect in record.architects %}
+            {{architect}}<br>
+            {% endfor %}
+        </p>
 
         <h2>Description</h2>
         <p>
