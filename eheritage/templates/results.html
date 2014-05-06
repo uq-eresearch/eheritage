@@ -17,13 +17,24 @@
 <div class="row">
     <div class="col-md-3">
         <b>Address:</b><input name="address" size="25" type="text" value="{{address_term}}">
-        {% for facet in ['addresses.suburb', 'state', 'architects'] %}
-            <b>{{facet}}</b><br>
-            <ul>
+{% set shown_facets = [
+    ('Suburb', 'addresses.suburb', 'title'),
+    ('State', 'state', 'upper'),
+    ('Architect', 'architects', 'title')
+] -%}
+        {% for title, facet, case in shown_facets %}
+          <b>{{title}}</b><br>
+          <ul>
             {% for term in facets[facet].terms %}
-            <li>{{ term.term }} ({{ term.count }})</li>
+                {% if case == 'title' %}
+                    <li>{{ term.term|title }} ({{ term.count }})</li>
+                {% elif case == 'upper' %}
+                    <li>{{ term.term|upper }} ({{ term.count }})</li>
+                {% else %}
+                    <li>{{ term.term }} ({{ term.count }})</li>
+                {% endif %}
             {% endfor %}
-            </ul>
+          </ul>
         {% endfor %}
     </div>
 
