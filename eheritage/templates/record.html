@@ -6,14 +6,14 @@
 
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <h1>{{ record.name }}</h1>
+        <h1>{{ record.name|title }}</h1>
 
         <h2>Address</h2>
         {% for address in record.addresses %}
         <p>
-            {{address.street_number}} {{address.street_name}}<br>
-            {{address.suburb}}<br>
-            {{address.lga_name}}, {{record.state}}, {{address.postcode}}
+            {{address.street_number if address.street_number}} {{address.street_name|title if address.street_name}}<br>
+            {{address.suburb|title if address.suburb}}<br>
+            {{address.lga_name|title if address.lga_name}}, {{record.state}}, {{address.postcode if address.postcode}}
         </p>
         {% endfor %}
 
@@ -26,7 +26,9 @@
 
         <h2>Construction Period</h2>
         <p>
+            {% if record.construction_start or record.construction_end %}
             {{record.construction_start}} - {{record.construction_end}}
+            {% endif %}
         </p>
 
         <h2>Architects</h2>
@@ -38,12 +40,12 @@
 
         <h2>Description</h2>
         <p>
-            {{ record.description|safe }}
+            {{ record.description|default('')|safe }}
         </p>
 
         <h2>Significance</h2>
         <p>
-            {{ record.significance|safe }}
+            {{ record.significance|safe if record.significance }}
         </p>
 
         <h2>URL</h2>
