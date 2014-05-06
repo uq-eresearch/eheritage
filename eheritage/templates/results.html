@@ -45,10 +45,10 @@
         <ul>
         {% for hit in results %}
         <li>
-                <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name }}</a></b>
+                <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name|title }}</a></b>
                  - <a href="{{ url_for('get_record', id=hit._id) }}">record</a>
                  - <a href="{{ url_for('get_record_json', id=hit._id) }}">json</a><br>
-                 {{ hit._source.location }}
+                 {{ hit._source.location|title if hit._source.location }}
 
         </li>
         {% endfor %}
