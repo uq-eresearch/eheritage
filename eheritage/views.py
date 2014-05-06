@@ -6,7 +6,6 @@ from flask import current_app
 from injest.search_index import simple_search, get_heritage_place, get_locations
 from injest.search_index import get_elasticutils_query, get_geogrid
 from eheritage import app
-import elasticutils.utils
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -61,8 +60,6 @@ def search():
         page = 1
 
     results = query.execute()
-    
-    print elasticutils.utils.to_json(query.build_search())
 
     pagination = Pagination(
         page=page,
