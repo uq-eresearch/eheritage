@@ -1,20 +1,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>{{title}} - Australian E-Heritage</title>
+{% block head %}
+    <title>{% block title %}{{title}}{% endblock %} - Australian E-Heritage</title>
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
     <link href='http://fonts.googleapis.com/css?family=Maven+Pro:400,700' rel='stylesheet' type='text/css'>
 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/MarkerCluster.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css') }}" />
-    <script src="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
+{% endblock head %}
   </head>
   <body>
     <div class="container">
