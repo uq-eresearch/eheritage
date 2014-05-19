@@ -1,6 +1,7 @@
 from flask import Flask
 from eheritage.utils import IterableAwareEncoder
 from flask.ext.assets import Environment, Bundle
+import os
 
 app = Flask(__name__)
 
@@ -24,6 +25,26 @@ css = Bundle('style.css', scss,
 
 app.json_encoder = IterableAwareEncoder
 
+
+# Absolute filesystem path to the secret file which holds this project's
+# SECRET_KEY. Will be auto-generated the first time this file is interpreted.
+# SECRET_FILE = os.path.normpath(os.path.join(DJANGO_ROOT, 'deploy', 'SECRET'))
+SECRET_FILE = 'SECRET'
+
+########## KEY CONFIGURATION
+# Try to load the SECRET_KEY from our SECRET_FILE. If that fails, then generate
+# a random SECRET_KEY and save it into our SECRET_FILE for future loading. If
+# everything fails, then just raise an exception.
+try:
+    app.secret_key = open(SECRET_FILE).read().strip()
+except IOError:
+    try:
+        app.secret_key = os.urandom(24)
+        with open(SECRET_FILE, 'w') as f:
+            f.write(app.secret_key)
+    except IOError:
+        raise Exception('Cannot open file `%s` for writing.' % SECRET_FILE)
+########## END KEY CONFIGURATION
 
 
 
