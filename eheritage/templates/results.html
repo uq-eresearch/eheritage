@@ -49,7 +49,9 @@
                  - <a href="{{ url_for('get_record', id=hit._id) }}">record</a>
                  - <a href="{{ url_for('get_record_json', id=hit._id) }}">json</a><br>
                  {% with address = hit._source.addresses|first %}
-                    {{address.lga_name|title if address.lga_name}}, {{address.state}}{{', ' ~ address.postcode if address.postcode}}
+                    {% if address %}
+                        {{address.lga_name|title if address.lga_name}}, {{address.state}}{{', ' ~ address.postcode if address.postcode}}
+                    {% endif %}
                  {% endwith %}
 
         </li>
