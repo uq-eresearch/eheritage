@@ -14,3 +14,22 @@ echo "create database vhd;" | mysql -u root -proot
 echo "grant usage on *.* to vhd@localhost identified by 'vhd';" | mysql -u root -proot
 echo "grant all privileges on vhd.* to vhd@localhost;" | mysql -u root -proot
 zcat vhd_2014_03_14_hermes_9_0_7.sql.gz | mysql -u vhd -pvhd vhd
+
+
+mkvirtualenv eheritage
+git clone https://github.com/uq-eresearch/eheritage.git
+cd eheritage
+setvirtualenvproject
+
+
+
+
+
+sudo apt-get install git libmysqlclient-dev
+
+
+sudo apt-get install npm nodejs-legacy
+sudo npm install -g bower
+cd eheritage/eheritage/static/
+bower install
+
