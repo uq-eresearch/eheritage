@@ -65,7 +65,10 @@
 <script>
 {% if session.search_term %}
 var search_term = "{{session.search_term}}";
-$('div.record').highlight(search_term);
+var terms = search_term.split(/\s+/);
+for (var i = 0; i < terms.length; i++) {
+    $('div.record').highlight(terms[i]);
+}
 {% endif %}
 </script>
 
