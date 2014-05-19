@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "leaflet.markercluster": "~0.4.0"
+    "leaflet.markercluster": "~0.4.0",
+    "jquery-highlight": "3.2.0"
   }
 }

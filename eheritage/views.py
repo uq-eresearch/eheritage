@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect
-from flask import jsonify, request, send_file
+from flask import jsonify, request, send_file, session
 from flask.ext.paginate import Pagination
 from flask import current_app
 
@@ -29,6 +29,7 @@ PAGE_SIZE = 10
 def prepare_keyword_search():
     search_term = request.args.get('keyword', '')
     query = get_elasticutils_query()
+    session['search_term'] = search_term
 
     if search_term:
         query = query.query(_all__match_and=search_term)

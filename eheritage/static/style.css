@@ -36,3 +36,11 @@ ul li .active {
     font-weight: bold;
 
 }
+
+
+/*
+ * jQuery-highlight styles
+ */
+.highlight {
+    background-color: #FFFF88;
+}

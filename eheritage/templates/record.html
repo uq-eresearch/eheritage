@@ -2,9 +2,15 @@
 
 {% block title %}{{record.name}}{% endblock %}
 
+
+{% block head %}
+    {{ super() }}
+<script src="{{ url_for('static', filename='bower_components/jquery-highlight/jquery.highlight.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 
-<div class="row">
+<div class="row record">
     <div class="col-md-8 col-md-offset-2">
         <h1>{{ record.name|title }}</h1>
 
@@ -54,6 +60,14 @@
         </p>
     </div>
 </div>
+
+
+<script>
+{% if session.search_term %}
+var search_term = "{{session.search_term}}";
+$('div.record').highlight(search_term);
+{% endif %}
+</script>
 
 
 {% endblock %}
