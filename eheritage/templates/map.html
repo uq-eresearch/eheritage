@@ -26,9 +26,7 @@
 <div class="row">
     <div class="col-md-8 col-md-offset-1">
             <p>
-                Please enter your Search Terms:<br>
-                <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}">
-                <input type="submit" value="Search">
+                <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Type keywords">
             </p>
     </div>
 </div>
@@ -38,8 +36,11 @@
     <div class="col-md-8 col-md-offset-1">
         <p>
             Search for location<br>
-            <input id="location" size="80" type="text">
+            <input id="location" size="80" type="text" placeholder="Start typing a place name">
         </p>
+    </div>
+    <div class="col-md-2 col-md-offset-1">
+        <button id="reload_records">Reload records</button>
     </div>
 </div>
 
