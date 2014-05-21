@@ -87,7 +87,7 @@
 {% set shown_facets = [
     ('Suburb', 'addresses.suburb', 'title'),
     ('State', 'state', 'upper'),
-    ('Architect', 'architects', 'title')
+    ('Architect', 'architects.raw', 'title')
 ] -%}
         {% for title, facet, case in shown_facets %}
           <b>{{title}}</b><br>

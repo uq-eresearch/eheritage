@@ -58,7 +58,7 @@ def search():
         query = query.query(**{'architects__match': creator_term})
         adv_search = True
 
-    query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects')
+    query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects.raw')
 
     try:
         page = int(request.args.get('page', 1))
