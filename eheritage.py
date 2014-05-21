@@ -53,7 +53,7 @@ if __name__ == '__main__':
             print search_index.create_index(args['<index_name>'])
 
         elif args['update_alias']:
-            search_index.update_alias(args['<index_name>'])
+            print search_index.update_alias(args['<index_name>'])
 
         elif args['delete_index']:
             print search_index.delete_index(args['<index_name>'])
@@ -62,7 +62,7 @@ if __name__ == '__main__':
             print 'Not Implemented!'
 
         elif args['reindex']:
-            search_index.reindex(args['<source>'], args['<target>'])
+            print search_index.reindex(args['<source>'], args['<target>'])
 
         elif args['index']:
 
