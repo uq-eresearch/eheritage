@@ -5,24 +5,41 @@
 {% block head %}
     {{ super() }}
 
+    <!-- Leaflet -->
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 
+    <!-- Leaflet MarkerCluster -->
     <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/MarkerCluster.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css') }}" />
     <script src="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
+
+    <!-- JQuery UI -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
 {% endblock %}
 
 {% block content %}
 
+<form  method="get" name="search">
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-8 col-md-offset-1">
             <p>
                 Please enter your Search Terms:<br>
                 <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}">
                 <input type="submit" value="Search">
             </p>
+    </div>
+</div>
+</form>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-1">
+        <p>
+            Search for location<br>
+            <input id="location" size="80" type="text">
+        </p>
     </div>
 </div>
 
@@ -54,11 +71,14 @@ var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z
 map.setView([-27.45, 139], 4);
 map.addLayer(MapQuestOpen_OSM);
 
-function addClusteredRecords(query) {
+function addClusteredRecords(query, keyword) {
     var markers = new L.MarkerClusterGroup({ chunkedLoading: true });
 
     jQuery.ajax({
         url: "{{ url_for('locations_json') }}" + (query ? query : ""),
+        data: {
+            keyword: keyword
+        },
         dataType: "json"
     }).done(function(locations) {
         for (var i = 0; i < locations.hits.hits.length; i++) {
@@ -213,10 +233,85 @@ function addGeoHashedRecords(query) {
 var numRecords = {{ count }};
 if (numRecords < 1000) {
     addClusteredRecords(location.search);
-} else {
-    addGeoHashedRecords(location.search);
 }
+//  else {
+//     addGeoHashedRecords(location.search);
+// }
 
 </script>
+
+<script>
+/* For use with geonames */
+function search() {
+    var $ = django.jQuery;
+    var searchterm = $('#geonames-q').val();
+
+    // Empty the table
+    $('#geonames-table > tbody:last').children().remove()
+
+
+    $.getJSON('http://ws.geonames.org/searchJSON?q=' + encodeURIComponent(searchterm) + '&maxRows=10',
+        function (data) {
+            console.log(data);
+            $.each(data.geonames, function(i, place) {
+                $('#geonames-table'
+                    ).append('<tr><td name="name">' + place.name + '</td><td name="adminName1">' + place.adminName1 + '</td><td name="country">' + place.countryName + '</td></td><td name="geonameId">' + place.geonameId + '</td><td name="lat">' + place.lat + '</td><td name="lng">' + place.lng + '</td><td><a class="selectPlace" href="#">Select</a></td></tr>');
+            });
+        });
+}
+
+
+$( "#location" ).autocomplete({
+  source: function( request, response ) {
+    $.ajax({
+      url: "http://ws.geonames.org/searchJSON",
+      dataType: "jsonp",
+      data: {
+        featureClass: "P",
+        country: "AU",
+        style: "full",
+        maxRows: 12,
+        name_startsWith: request.term,
+        username: 'eheritage_au'
+      },
+      success: function( data ) {
+        response( $.map( data.geonames, function( item ) {
+          return {
+            label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+            value: item.value,
+            details: item
+          }
+        }));
+      }
+    });
+  },
+  minLength: 2,
+  select: function( event, ui ) {
+    var geonameLocation = ui.item.details;
+    var bbox = geonameLocation.bbox;
+
+    var southWest = L.latLng(bbox.south, bbox.west),
+        northEast = L.latLng(bbox.north, bbox.east),
+    bounds = L.latLngBounds(southWest, northEast);
+
+    map.fitBounds(bounds);
+
+    console.log(event);
+    console.log(ui);
+    console.log(this);
+    // log( ui.item ?
+    //   "Selected: " + ui.item.label :
+    //   "Nothing selected, input was " + this.value);
+  },
+  open: function() {
+    $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+  },
+  close: function() {
+    $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+  }
+});
+</script>
+
+
 
 {% endblock %}
