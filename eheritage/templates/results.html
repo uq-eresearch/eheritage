@@ -4,67 +4,71 @@
 {% block content %}
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#keyword" data-toggle="tab">Keyword</a></li>
-  <li><a href="#advanced" data-toggle="tab">Advanced</a></li>
+  <li {% if not adv_search %} class="active"{% endif %}><a href="#keyword" data-toggle="tab">Keyword</a></li>
+  <li {% if adv_search %} class="active"{% endif %}><a href="#advanced" data-toggle="tab">Advanced</a></li>
 </ul>
 
 <div class="tab-content">
-  <div class="tab-pane active" id="keyword">
+  <div class="tab-pane {% if not adv_search %} active{% endif %}" id="keyword">
           <p>
+    <form  method="get" name="search">
               <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Keyword search term">
               <input type="submit" value="Search">
+    </form>
           </p>
   </div>
-  <div class="tab-pane form-horizontal" id="advanced">
-<!--           <div class="form-group">
-            <label for="keyword" class="col-sm-2 control-label">Title</label>
-            <div class="col-sm-10">
-            <input class="form-control" name="keyword" placeholder="Enter keyword">
-            </div>
-          </div> -->
+  <div class="tab-pane form-horizontal {% if  adv_search %} active{% endif %}" id="advanced">
+    <form  method="get" name="search">
           <div class="form-group">
+            <label for="keyword" class="col-sm-2 control-label">Keyword</label>
+            <div class="col-sm-4">
+              <input class="form-control" name="keyword" value="{{ request.args.get('keyword', '') }}" placeholder="Enter keyword">
+            </div>
             <label for="title" class="col-sm-2 control-label">Title</label>
             <div class="col-sm-4">
               <input class="form-control" id="title" placeholder="Enter title">
             </div>
+          </div>
 
+          <div class="form-group">
             <label for="period" class="col-sm-2 control-label">Period</label>
             <div class="col-sm-4">
               <input class="form-control" id="period" placeholder="Enter period">
             </div>
-          </div>
-          <div class="form-group">
             <label for="address" class="col-sm-2 control-label">Address</label>
             <div class="col-sm-4">
               <input class="form-control" name="address" value="{{ request.args.get('address', '') }}" placeholder="Enter Address">
             </div>
+          </div>
 
+          <div class="form-group">
             <label for="building_type" class="col-sm-2 control-label">Building Type</label>
-    <div class="col-sm-4">
-            <input class="form-control" id="building_type" placeholder="Enter building type">
+            <div class="col-sm-4">
+              <input class="form-control" id="building_type" placeholder="Enter building type">
             </div>
-          </div>
-          <div class="form-group">
             <label for="creator" class="col-sm-2 control-label">Creator</label>
-    <div class="col-sm-4">
-            <input class="form-control" id="creator" placeholder="Enter creator">
-            </div>
-
-            <label for="style" class="col-sm-2 control-label">Style</label>
-    <div class="col-sm-4">
-            <input class="form-control" id="style" placeholder="Enter style">
+            <div class="col-sm-4">
+              <input class="form-control" id="creator" placeholder="Enter creator">
             </div>
           </div>
+
           <div class="form-group">
+            <label for="style" class="col-sm-2 control-label">Style</label>
+            <div class="col-sm-4">
+              <input class="form-control" id="style" placeholder="Enter style">
+            </div>
             <label for="description" class="col-sm-2 control-label">Description</label>
             <div class="col-sm-4">
               <input class="form-control" id="description" placeholder="Enter description">
             </div>
-            <div class="col-sm-2 col-md-offset-2">
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-2 col-md-offset-8">
               <input type="submit" value="Search">
             </div>
           </div>
-  </div>
+    </form>
 </div>
 
 <div class="row">

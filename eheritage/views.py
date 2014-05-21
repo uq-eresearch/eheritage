@@ -46,10 +46,17 @@ def search():
 
     query = prepare_keyword_search()
 
+    adv_search = False
+
     address_term = request.args.get('address', '')
+    creator_term = request.args.get('creator', '')
 
     if address_term:
         query = query.query(**{'address__match_phrase': address_term})
+        adv_search = True
+    if creator_term:
+        query = query.query(**{'architect__match_phrase': creator_term})
+        adv_search = True
 
     query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects')
 
@@ -76,6 +83,7 @@ def search():
         css_framework='bootstrap3',
         display_msg='displaying records <b>{start} - {end}</b> of <b>{total}</b>')
 
+
     if request_wants_json():
         # return jsonify(items=[x.to_json() for x in items])
         return jsonify({
@@ -87,8 +95,8 @@ def search():
     return render_template("results.html",
         count = results.count,
         results = results.results,
-        address_term = address_term,
         facets = results.facets,
+        adv_search = adv_search,
         pagination=pagination)
 
 
