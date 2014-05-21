@@ -6,6 +6,7 @@ from flask import current_app
 from injest.search_index import simple_search, get_heritage_place, get_locations
 from injest.search_index import get_elasticutils_query, get_geogrid
 from eheritage import app
+from elasticsearch import TransportError
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -20,6 +21,10 @@ def request_wants_json():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 @app.route("/ember/")
 def ember():
@@ -60,7 +65,10 @@ def search():
     except ValueError:
         page = 1
 
-    results = query.execute()
+    try:
+        results = query.execute()
+    except TransportError:
+        return render_template("results.html")
 
     pagination = Pagination(
         page=page,
