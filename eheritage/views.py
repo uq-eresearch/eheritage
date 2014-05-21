@@ -55,7 +55,7 @@ def search():
         query = query.query(**{'address__match_phrase': address_term})
         adv_search = True
     if creator_term:
-        query = query.query(**{'architects__match': creator_term})
+        query = query.query(**{'architects__match_phrase': creator_term})
         adv_search = True
 
     query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects.raw')
