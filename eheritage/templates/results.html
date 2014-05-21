@@ -3,20 +3,83 @@
 
 {% block content %}
 
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#keyword" data-toggle="tab">Keyword</a></li>
+  <li><a href="#advanced" data-toggle="tab">Advanced</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="keyword">
+          <p>
+              <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Keyword search term">
+              <input type="submit" value="Search">
+          </p>
+  </div>
+  <div class="tab-pane form-horizontal" id="advanced">
+<!--           <div class="form-group">
+            <label for="keyword" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+            <input class="form-control" name="keyword" placeholder="Enter keyword">
+            </div>
+          </div> -->
+          <div class="form-group">
+            <label for="title" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-4">
+              <input class="form-control" id="title" placeholder="Enter title">
+            </div>
+
+            <label for="period" class="col-sm-2 control-label">Period</label>
+            <div class="col-sm-4">
+              <input class="form-control" id="period" placeholder="Enter period">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="address" class="col-sm-2 control-label">Address</label>
+            <div class="col-sm-4">
+              <input class="form-control" name="address" value="{{ request.args.get('address', '') }}" placeholder="Enter Address">
+            </div>
+
+            <label for="building_type" class="col-sm-2 control-label">Building Type</label>
+    <div class="col-sm-4">
+            <input class="form-control" id="building_type" placeholder="Enter building type">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="creator" class="col-sm-2 control-label">Creator</label>
+    <div class="col-sm-4">
+            <input class="form-control" id="creator" placeholder="Enter creator">
+            </div>
+
+            <label for="style" class="col-sm-2 control-label">Style</label>
+    <div class="col-sm-4">
+            <input class="form-control" id="style" placeholder="Enter style">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="description" class="col-sm-2 control-label">Description</label>
+            <div class="col-sm-4">
+              <input class="form-control" id="description" placeholder="Enter description">
+            </div>
+            <div class="col-sm-2 col-md-offset-2">
+              <input type="submit" value="Search">
+            </div>
+          </div>
+  </div>
+</div>
+
 <div class="row">
     <div class="col-md-10">
-            <p>
-                Please enter your Search Terms:<br>
-                <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}">
-                <input type="submit" value="Search">
-            </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10">
     </div>
 </div>
 
-        
+
+
 <div class="row">
-    <div class="col-md-3">
-        <b>Address:</b><input name="address" type="text" value="{{address_term}}">
+    <div class="col-md-3 facets">
 {% set shown_facets = [
     ('Suburb', 'addresses.suburb', 'title'),
     ('State', 'state', 'upper'),
@@ -24,7 +87,7 @@
 ] -%}
         {% for title, facet, case in shown_facets %}
           <b>{{title}}</b><br>
-          <ul>
+          <ol>
             {% for term in facets[facet].terms %}
                 {% if case == 'title' %}
                     <li>{{ term.term|title }} ({{ term.count }})</li>
@@ -34,29 +97,30 @@
                     <li>{{ term.term }} ({{ term.count }})</li>
                 {% endif %}
             {% endfor %}
-          </ul>
+          </ol>
         {% endfor %}
     </div>
 
 
-    <div class="col-md-9">
+    <div class="col-md-9 results">
 
         {{ pagination.info|safe }}
-        <ul>
+        <ol>
         {% for hit in results %}
         <li>
-                <b><a href="{{ hit._source.url }}" target="_blank">[{{ hit._source.state }}] {{ hit._source.name|title }}</a></b>
-                 - <a href="{{ url_for('get_record', id=hit._id) }}">record</a>
-                 - <a href="{{ url_for('get_record_json', id=hit._id) }}">json</a><br>
+                <b><a href="{{ url_for('get_record', id=hit._id) }}">[{{ hit._source.state }}] {{ hit._source.name|title }}</a></b>
+                 - <a href="{{ hit._source.url }}">Source record</a>
+                 <!-- - <a href="{{ url_for('get_record_json', id=hit._id) }}">json</a> -->
+                 <br>
                  {% with address = hit._source.addresses|first %}
                     {% if address %}
-                        {{address.lga_name|title if address.lga_name}}, {{address.state}}{{', ' ~ address.postcode if address.postcode}}
+                        <div class="address">{{address.lga_name|title if address.lga_name}}, {{address.state}}{{', ' ~ address.postcode if address.postcode}}</div>
                     {% endif %}
                  {% endwith %}
 
         </li>
         {% endfor %}
-        </ul>
+        </ol>
 
         {{ pagination.links|safe }}
     </div>

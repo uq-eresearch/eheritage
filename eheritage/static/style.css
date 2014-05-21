@@ -44,3 +44,43 @@ ul li .active {
 .highlight {
     background-color: #FFFF88;
 }
+
+/*
+ * Top Navbar
+ */
+body {
+    padding-top: 50px;
+}
+header.navbar {
+    background-color: aliceblue;
+}
+
+
+
+/*
+ * Facet sidebar
+ */
+.facets li {
+    font-size: 12px;
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.facets ol {
+    padding-left: 0px;
+    padding-bottom: 5px;
+}
+
+/*
+ * Results List
+ */
+.results li {
+    list-style: none;
+    margin: 0px;
+    padding-bottom: 5px;
+}
+
+.results .address {
+    font-size: 13px;
+}
