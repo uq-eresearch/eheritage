@@ -7,7 +7,10 @@ This module contains the code for putting heritage places into a search index.
 
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
-
+import elasticsearch.helpers
+from clint.textui import progress
+import json
+import traceback
 from flask import current_app
 
 from flask import g
@@ -71,11 +74,19 @@ def get_elasticutils_query():
     return EHeritageS().es(urls=[ES_HOST]).indexes(ES_INDEX).doctypes(ES_DOCTYPE)
 
 
+def reindex(source, target):
+    """ReIndex data from source into target
+
+    Used when a new mapping has been created
+    """
+    es = get_es()
+    elasticsearch.helpers.reindex(es, source, target)
 
 
-def create_index():
-    ES_INDEX = current_app.config['ES_INDEX']
-    body = {
+def create_index(index_name):
+    if not index_name:
+        index_name = current_app.config['ES_INDEX']
+    mapping_body = {
         "mappings": {
             "heritage_place": {
                 "_source": {
@@ -87,11 +98,15 @@ def create_index():
                 "properties": {
                     "architectural_styles": {
                         "type": "string",
-                        "index": "not_analyzed"
+                        "fields" : {
+                          "raw" : {"type" : "string", "index" : "not_analyzed"}
+                        }
                     },
                     "architects": {
                         "type": "string",
-                        "index": "not_analyzed"
+                        "fields" : {
+                          "raw" : {"type" : "string", "index" : "not_analyzed"}
+                        }
                     },
 
                     "date_created": {
@@ -115,8 +130,7 @@ def create_index():
                         "index": "not_analyzed"
                     },
                     "vhr_number": {
-                        "type": "string",
-                        "index": "not_analyzed"
+                        "type": "string"
                     },
                     "geolocation": {
                         "type": "geo_point",
@@ -143,7 +157,7 @@ def create_index():
             }
         }
     }
-    return get_es().indices.create(ES_INDEX, body)
+    return get_es().indices.create(index_name, mapping_body)
 
 
 def add_heritage_place(place):
@@ -230,7 +244,7 @@ def get_heritage_place(id):
 def get_locations(extra_query={}):
     ES_INDEX = current_app.config['ES_INDEX']
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
-    
+
     query = {
         "size": 10000,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
@@ -249,7 +263,7 @@ def get_geogrid(precision, extra_query={}):
     """
     ES_INDEX = current_app.config['ES_INDEX']
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
-    
+
     query = {
         "aggregations" : {
             "geogrid" : {
@@ -267,17 +281,14 @@ def get_geogrid(precision, extra_query={}):
     return res
 
 
-def delete_index():
-    """Delete the entire index of heritage places
-    DANGER!!
+def delete_index(index_name):
+    """Delete the entire index of heritage places - DANGER!!
     """
-    ES_INDEX = current_app.config['ES_INDEX']
-    
-    return get_es().indices.delete(ES_INDEX)
+    if not index_name:
+        index_name = current_app.config['ES_INDEX']
 
-from clint.textui import progress
-import json
-import traceback
+    return get_es().indices.delete(index_name)
+
 
 def load_qld_data(qld_filename):
     from qld import parse_ahpi_xml
@@ -290,7 +301,7 @@ def load_qld_data(qld_filename):
 
 def make_es_index_obj(docs, es_index, es_doctype):
     """Generator function that turns ES _source documents into
-    index documents suitable for streaming_bulk"""    
+    index documents suitable for streaming_bulk"""
 
     for doc in docs:
         insert_doc = {
@@ -318,7 +329,6 @@ def load_vic_data():
             raise RequestError
 
 
-from elasticsearch.helpers import streaming_bulk
 def stream_vic_data():
     import vic
     ES_INDEX = current_app.config['ES_INDEX']
@@ -330,8 +340,8 @@ def stream_vic_data():
     es = get_es()
 
     for ok, result in progress.bar(
-                        streaming_bulk(
-                            es, 
+                elasticsearch.helpers.streaming_bulk(
+                            es,
                             make_es_index_obj(vic.all_places(), ES_INDEX, ES_DOCTYPE)
                       ), width=80, expected_size=num):
         if not ok:

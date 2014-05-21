@@ -1,29 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
- 
+
 """Test docopt example.
- 
+
 Usage:
     eheritage.py index qld <filename>
     eheritage.py index vic
     eheritage.py get_index_version
-    eheritage.py create_index
-    eheritage.py delete_index
-    eheritage.py reindex <old_version> <new_version>
+    eheritage.py create_index <index_name>
+    eheritage.py delete_index <index_name>
+    eheritage.py update_alias <index_name>
+    eheritage.py list_alias
+    eheritage.py reindex <source> <target>
     eheritage.py -h | --help
     eheritage.py --version
- 
+
 Options:
     -h --help   Show help message.
     --version   Show version.
 """
- 
+
 from docopt import docopt
 import clint
 import logging
 from eheritage.injest import search_index
 from eheritage import app
- 
+
 
 def setup_logging():
     logger = logging.getLogger("eheritage")
@@ -48,13 +50,19 @@ if __name__ == '__main__':
 
     with app.app_context():
         if args['create_index']:
-            print search_index.create_index()
+            print search_index.create_index(args['<index_name>'])
+
+        elif args['update_alias']:
+            search_index.update_alias(args['<index_name>'])
 
         elif args['delete_index']:
-            print search_index.delete_index()
+            print search_index.delete_index(args['<index_name>'])
 
         elif args['get_index_version']:
             print 'Not Implemented!'
+
+        elif args['reindex']:
+            search_index.reindex(args['<source>'], args['<target>'])
 
         elif args['index']:
 
