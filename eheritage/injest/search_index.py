@@ -246,14 +246,21 @@ def get_locations(extra_query={}):
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
 
     query = {
-        "size": 10000,
+        "size": 1000,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
         "filter": {
-            "exists": {"field": "geolocation"}
+            "and": [
+                {
+                    "exists": {"field": "geolocation"}
+                }
+            ]
         }
     }
     if extra_query:
-        query['query'] = extra_query
+        if 'query' in extra_query:
+            query['query'] = {"match": extra_query["match"] }
+        if 'filter' in extra_query:
+            query['filter']['and'].append(extra_query["filter"])
     res = get_es().search(index=ES_INDEX, doc_type=ES_DOCTYPE, body=query)
 
     return res

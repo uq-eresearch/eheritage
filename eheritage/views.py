@@ -118,15 +118,30 @@ def search_json(search_term):
 
 
 def generate_location_query():
+    query = {}
     search_term = request.args.get('keyword', '')
+
+    north = request.args.get('north', '')
+    south = request.args.get('south', '')
+    east = request.args.get('east', '')
+    west = request.args.get('west', '')
     if search_term:
-        return {
-            "match": {
+        query["match"] = {
                 "_all": search_term
+        }
+    if north:
+        query["filter"] = {
+            "geo_bounding_box" : {
+                "geolocation" : {
+                    "top" : north,
+                    "bottom": south,
+                    "left": west,
+                    "right": east
+                }
             }
         }
-    else:
-        return None
+
+    return query
 
 @app.route("/locations.json")
 def locations_json():
