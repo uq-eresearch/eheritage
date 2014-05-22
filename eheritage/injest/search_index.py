@@ -257,7 +257,7 @@ def get_locations(extra_query={}):
         }
     }
     if extra_query:
-        if 'query' in extra_query:
+        if 'match' in extra_query:
             query['query'] = {"match": extra_query["match"] }
         if 'filter' in extra_query:
             query['filter']['and'].append(extra_query["filter"])
