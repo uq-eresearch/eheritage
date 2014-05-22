@@ -39,9 +39,6 @@
             <input id="location" size="80" type="text" placeholder="Start typing a place name">
         </p>
     </div>
-    <div class="col-md-2 col-md-offset-1">
-        <button id="reload_records">Reload records</button>
-    </div>
 </div>
 
 <div class="row">
@@ -119,7 +116,7 @@ function addClusteredRecords(query) {
         gMarkers = markers;
 
         map.addLayer(markers);
-        map.fitBounds(markers.getBounds());
+        // map.fitBounds(markers.getBounds()); // getBounds() Doesn't work with this type of marker layer group
     });
 
     function browseToUrl(e) {
@@ -133,6 +130,11 @@ var query = {
 }
 addClusteredRecords(query);
 
+
+
+map.on('moveend', function(e) {
+    reloadRecords();
+});
 
 </script>
 
@@ -219,12 +221,6 @@ function reloadRecords() {
     }
     addClusteredRecords(query);
 }
-
-$('#reload_records').click(function () {
-
-    reloadRecords();
-
-});
 </script>
 
 
