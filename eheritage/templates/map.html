@@ -47,7 +47,7 @@
 <div class="row">
     <div class="col-md-12 record-count">
         {% if count %}
-            <p>Found {{ count }} matching records</p>
+            <p>{{ count }} records in area.</p>
         {% endif %}
     </div>
 </div>
@@ -80,8 +80,13 @@ map.addLayer(MapQuestOpen_OSM);
 function updateCount(locations) {
     var found_records = locations.hits.total;
     var returned_records = locations.hits.hits.length
-
-    $('.record-count p').html("Found " + found_records + " matching records. Displaying top " + returned_records)
+    var message = "";
+    if (found_records > returned_records) {
+        message = found_records + " records in this area. Only displaying top " + returned_records + ". Search or zoom to a location and reload to refine.";
+    } else {
+        message = "Displaying " + returned_records + " records in this area.";
+    }
+    $('.record-count p').html(message);
 }
 
 
@@ -187,6 +192,7 @@ $( "#location" ).autocomplete({
 
     map.fitBounds(bounds);
 
+    reloadRecords();
     console.log(event);
     console.log(ui);
     console.log(this);
@@ -202,7 +208,7 @@ $( "#location" ).autocomplete({
   }
 });
 
-$('#reload_records').click(function () {
+function reloadRecords() {
     var bounds = map.getBounds();
     var query = {
         north: bounds.getNorth(),
@@ -212,6 +218,11 @@ $('#reload_records').click(function () {
         keyword: $('input[name="keyword"]').val()
     }
     addClusteredRecords(query);
+}
+
+$('#reload_records').click(function () {
+
+    reloadRecords();
 
 });
 </script>
