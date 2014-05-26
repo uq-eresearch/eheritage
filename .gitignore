@@ -4,3 +4,4 @@
 eheritage/static/bower_components/
 data/*
 SECRET
+devconfig.cfg

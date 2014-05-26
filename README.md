@@ -27,6 +27,12 @@ Install dependencies of the project:
 
     pip install --requirement requirements.txt
 
+Use development settings:
+
+    cp devconfig.sample devconfig.cfg
+    export EHERITAGE_SETTINGS=$HOME/eheritage/devconfig.cfg
+    # Or whatever your local path to a development settings file is
+
 Run the e-Heritage portal development server:
 
     ./run.py
