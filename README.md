@@ -33,6 +33,12 @@ Use development settings:
     export EHERITAGE_SETTINGS=$HOME/eheritage/devconfig.cfg
     # Or whatever your local path to a development settings file is
 
+And use development settings automatically when activating your virtualenv by adding the environment setting to a post-activate hook:
+
+    cdvirtualenv
+    echo "export EHERITAGE_SETTINGS=$HOME/eheritage/devconfig.cfg" >> bin/postactivate
+    cdproject
+
 Run the e-Heritage portal development server:
 
     ./run.py
