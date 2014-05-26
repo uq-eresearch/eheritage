@@ -92,7 +92,7 @@ def get_item_categories(place_id):
                           JOIN item_groups on item_categories_places.item_group_id = item_groups.id
                           WHERE place_id = :place_id"""
     item_categories = engine.execute(text(item_categories_q), place_id=place_id)
-    return [item_category_name[0] for item_category_name in item_categories]    
+    return [item_category_name[0] for item_category_name in item_categories]
 
 def massage_before_indexing(place):
     place['state'] = 'VIC'
@@ -100,7 +100,7 @@ def massage_before_indexing(place):
     place['url'] = u"http://vhd.heritage.vic.gov.au/vhd/heritagevic#detail_places;%d" % place['id']
     place['country'] = 'Australia'
     place['name'] = place['place_name']
-    
+
     for address in place['addresses']:
         address['state'] = 'VIC'
 
