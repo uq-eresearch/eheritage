@@ -225,10 +225,47 @@ def advanced_search(search_terms, page=1):
             "state" : { "terms" : {"field" : "state"} }
         },
     }
-    res = get_es().search(index=ES_INDEX, body=query)
+    results = get_es().search(index=ES_INDEX, body=query)
 
-    return res
+    return results
 
+def get_construction_dates():
+    """Return the results of a histogram query on construction start dates
+    """
+    es = get_es()
+    query = {
+          "aggs" : {
+            "construction_years" : {
+              "terms" : {
+                "field" : "construction_start",
+                "order" : { "_term" : "asc" },
+                "size": 250
+              }
+            },
+            "num_construction_years" : {
+              "cardinality" : {
+                "field" : "construction_start"
+              }
+            },
+            "construction_decades": {
+              "histogram": {
+                "field" : "construction_start",
+                "interval": 10
+              }
+            },
+            "construction_end_decades": {
+              "histogram": {
+                "field" : "construction_end",
+                "interval": 10
+              }
+            }
+          },
+          "size": 0
+        }
+    ES_INDEX = current_app.config['ES_INDEX']
+    results = get_es().search(index=ES_INDEX, body=query)
+
+    return results
 
 
 def get_heritage_place(id):

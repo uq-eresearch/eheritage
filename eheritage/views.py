@@ -4,7 +4,7 @@ from flask.ext.paginate import Pagination
 from flask import current_app
 
 from injest.search_index import simple_search, get_heritage_place, get_locations
-from injest.search_index import get_elasticutils_query, get_geogrid
+from injest.search_index import get_elasticutils_query, get_geogrid, get_construction_dates
 from eheritage import app
 from elasticsearch import TransportError
 
@@ -162,3 +162,14 @@ def map():
 
     return render_template("map.html",
         count=num_results)
+
+
+@app.route("/timeline")
+def timeline():
+    return render_template("timeline.html")
+
+@app.route("/api/construction_dates")
+def construction_dates():
+    dates = get_construction_dates()
+
+    return jsonify(dates)
