@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='locationfilter.css') }}" />
+    <script src="{{ url_for('static', filename='locationfilter.js') }}"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -72,32 +76,37 @@ var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z
 map.setView([-27.45, 139], 4);
 map.addLayer(MapQuestOpen_OSM);
 
-function updateCount(locations) {
-    var found_records = locations.hits.total;
-    var returned_records = locations.hits.hits.length
-    var message = "";
-    if (found_records > returned_records) {
-        message = found_records + " records in this area. Only displaying top " + returned_records + ". Search or zoom to a location and reload to refine.";
-    } else {
-        message = "Displaying " + returned_records + " records in this area.";
-    }
-    $('.record-count p').html(message);
-}
-
+var locationFilter = new L.LocationFilter().addTo(map);
+locationFilter.on("change", function (e) {
+  reloadRecords();
+});
+locationFilter.on("enabled", function () {
+  reloadRecords();
+});
+locationFilter.on("disabled", function () {
+  reloadRecords();
+});
 
 function addClusteredRecords(query) {
     // var markers = new L.MarkerClusterGroup({ chunkedLoading: true });
-    var markers = new L.LayerGroup();
-
     jQuery.ajax({
         url: "{{ url_for('locations_json') }}",
         data: query,
         dataType: "json"
     }).done(function(locations) {
         updateCount(locations);
-
-        for (var i = 0; i < locations.hits.hits.length; i++) {
-            var hit = locations.hits.hits[i];
+        if(locations.hits.hits.length > 100 && map.getZoom() < 16) {
+          updateCount("Found "+ locations.hits.total +
+            " records in this area. Search or zoom-in to a location to refine.");
+        } else {
+          if(locations.hits.total > locations.hits.hits.length) {
+            updateCount("Displaying " + locations.hits.hits.length + " records of "+
+              locations.hits.total +" found in this area.");
+          } else {
+            updateCount("Displaying " + locations.hits.hits.length + " records found in this area.");
+          }
+          var markers = new L.LayerGroup();
+          $.each(locations.hits.hits, function( index, hit ) {
             var marker = L.marker(
                 L.latLng(hit.fields["geolocation.lat"][0], hit.fields["geolocation.lon"][0]),
                 {
@@ -107,18 +116,24 @@ function addClusteredRecords(query) {
             );
             marker.on('click', browseToUrl);
             markers.addLayer(marker);
+          });
         }
         if (typeof(gMarkers) != "undefined") {
             map.removeLayer(gMarkers);
+            gMarkers = undefined;
         }
-        gMarkers = markers;
-
-        map.addLayer(markers);
-        // map.fitBounds(markers.getBounds()); // getBounds() Doesn't work with this type of marker layer group
+        if(markers) {
+          map.addLayer(markers);
+          gMarkers = markers;
+        }
     });
 
     function browseToUrl(e) {
         window.open(this.options.url);
+    }
+
+    function updateCount(message) {
+        $('.record-count p').html(message);
     }
 }
 
@@ -209,7 +224,12 @@ $( "#location" ).autocomplete({
 });
 
 function reloadRecords() {
-    var bounds = map.getBounds();
+    var bounds;
+    if(locationFilter.isEnabled()) {
+      bounds = locationFilter.getBounds();
+    } else {
+      bounds = map.getBounds();
+    }
     var query = {
         north: bounds.getNorth(),
         south: bounds.getSouth(),
