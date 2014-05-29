@@ -6,9 +6,9 @@
     <link rel=stylesheet type=text/css href="/static/style.css">
 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+    <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+    <script src="//cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 
   </head>
   <body>
@@ -28,6 +28,22 @@
 </script>
 
 
+<script type="text/x-handlebars" id="components/search-result">
+    <div class="result">
+        <b><a {{bind-attr href=record.url }} target="_blank">[{{ record.state }}] {{ record.name }}</a></b></em><br>
+    </div>
+</script>
+
+
+<script type="text/x-handlebars" id="components/facet-list">
+<ul>
+{{#each facet in facets}}
+  <li>{{action}}</li>
+{{/each}}
+</ul>
+</script>
+
+
 <script type="text/x-handlebars" id="search">
 <h1>Search</h1>
 
@@ -37,7 +53,7 @@
 
 <p>Found {{count}} results</p>
 <p>
-  Page: 
+  Page:
   {{#each n in pages}}
     {{link-to n (query-params page=n)}}
   {{/each}}
@@ -50,7 +66,7 @@
   {{else}}
     Previous
   {{/if}}
-  
+
   {{#if nextPage}}
     {{link-to 'Next' (query-params page=nextPage)}}
   {{else}}
@@ -61,11 +77,7 @@
 <div class="row">
 <ul>
 {{#each results}}
-<li>
-    <div class="result">
-        <b><a {{bind-attr href=_source.url }} target="_blank">[{{ _source.state }}] {{ _source.name }}</a></b></em><br>
-    </div>
-</li>
+  {{search-result record=_source}}
 {{/each}}
 </ul>
 </div>

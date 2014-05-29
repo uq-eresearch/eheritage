@@ -20,13 +20,15 @@ App.SearchRoute = Ember.Route.extend({
         queryParamsDidChange: function() {
           // This is how we opt-in to
           // a full-on transition that'll
-          // refire the `model` hook and 
+          // refire the `model` hook and
           // give us a chance to reload data
           // from the server.
           this.refresh();
         },
     }
 });
+
+
 // Helper computed property used by nextPage
 // and previousPage.
 var incrementPage = function(amt) {
@@ -38,6 +40,9 @@ var incrementPage = function(amt) {
     }
   });
 };
+
+
+
 App.SearchController = Ember.ObjectController.extend({
     queryParams: ['keyword', 'page'],
     keyword: null,
@@ -77,6 +82,11 @@ App.SearchController = Ember.ObjectController.extend({
     }
 });
 
+
+
+App.SearchResultComponent = Ember.Component.extend({
+    tagName: 'li'
+});
 
 
 
