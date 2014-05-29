@@ -8,6 +8,9 @@ from injest.search_index import get_elasticutils_query, get_geogrid, get_constru
 from eheritage import app
 from elasticsearch import TransportError
 
+
+PAGE_SIZE = 10
+
 def request_wants_json():
     best = request.accept_mimetypes \
         .best_match(['application/json', 'text/html'])
@@ -29,7 +32,6 @@ def about():
 @app.route("/ember/")
 def ember():
     return send_file("templates/ember.html")
-PAGE_SIZE = 10
 
 def prepare_keyword_search():
     search_term = request.args.get('keyword', '')
@@ -104,6 +106,7 @@ def search():
 def get_record(id):
     result = get_heritage_place(id)
     return render_template("record.html",
+        record_id = result['_id'],
         record = result['_source'])
 
 @app.route("/record/<id>.json")
@@ -146,7 +149,13 @@ def generate_location_query():
 @app.route("/locations.json")
 def locations_json():
     query = generate_location_query()
-    results = get_locations(query)
+
+    try:
+        num_results = int(request.args.get('num_results', '1000'))
+    except ValueError:
+        num_results = 1000
+
+    results = get_locations(query, num_results)
     return jsonify(results)
 
 @app.route("/geogrid.json")

@@ -278,12 +278,12 @@ def get_heritage_place(id):
     return res
 
 
-def get_locations(extra_query={}):
+def get_locations(extra_query={}, num_results=1000):
     ES_INDEX = current_app.config['ES_INDEX']
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
 
     query = {
-        "size": 1000,
+        "size": num_results,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
         "filter": {
             "and": [
