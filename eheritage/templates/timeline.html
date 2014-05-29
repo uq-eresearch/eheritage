@@ -9,23 +9,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
 
 <style>
-#timeline div {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: right;
-  padding: 3px;
-  margin: 1px;
-  color: white;
-}
-#timeline-svg rect {
-    fill: steelblue;
-}
-#timeline-svg text {
-    fill: white;
-    font: 10px sans-serif;
-    text-anchor: end;
-}
-#decadeChart text {
+.d3chart text {
     /*fill: white;*/
     font: 10px sans-serif;
     text-anchor: middle;
@@ -39,77 +23,31 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h2>Divs</h2>
-        <div id="timeline"></div>
-
-        <h2>SVG</h2>
-        <div id="timeline-svg"></div>
-
-
+        <h2>Construction Started Decade</h2>
+        <div class="d3chart" id="decadeStartChart"></div>
         <h2>Construction Ended Decade</h2>
-        <div id="decadeChart"></div>
+        <div class="d3chart" id="decadeEndChart"></div>
     </div>
 </div>
 
 
 
 <script>
-var data = [4, 8, 15, 16, 23, 42];
-
-var width = 420,
-    barHeight = 20;
-
-var x = d3.scale.linear()
-    .domain([0, d3.max(data)])
-    .range([0, width]);
-
-d3.select("#timeline")
-  .selectAll("div")
-    .data(data)
-  .enter().append("div")
-    .style("width", function(d) { return x(d) + "px"; })
-    .text(function(d) { return d; });
-
-
-var chart = d3.select("#timeline-svg")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", barHeight * data.length);
-
-var bar = chart.selectAll("g")
-    .data(data)
-  .enter().append("g")
-    .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-
-bar.append("rect")
-    .attr("width", x)
-    .attr("height", barHeight - 1);
-
-bar.append("text")
-    .attr("x", function(d) { return x(d) - 3; })
-    .attr("y", barHeight / 2)
-    .attr("dy", ".35em")
-    .text(function(d) { return d; });
-
-
-
 
 d3.json("/api/construction_dates", function (data) {
     allData = data;
-    constructionDateData = data.aggregations.construction_decades.buckets;
-    // array of objects with key and doc_count
-
 
     var w = 800,
         h = 150;
 
-    var decadeChart = d3.select("#decadeChart")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
-
-    function updateChart(data) {
+    function createChart(selector, data) {
         var barWidth = w / data.length;
+
+        var newChart = d3.select(selector)
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
         var y = d3.scale.linear()
             .domain([0, d3.max(data, function(d) { return +d.doc_count; }) ])
             .range([0, h]);
@@ -118,7 +56,7 @@ d3.json("/api/construction_dates", function (data) {
         //     .domain(data.map(function(d) {return d.key;}))
         //     .rangeRoundBands(w);
 
-        var bar = decadeChart.selectAll("g")
+        var bar = newChart.selectAll("g")
             .data(data)
           .enter().append("g")
             .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; })
@@ -142,11 +80,14 @@ d3.json("/api/construction_dates", function (data) {
             .attr("fill", function(d) { return y(d.doc_count) >= 24 ? "white" : "black"; })
             .attr("dy", ".35em")
             .text(function(d) { return d.key; });
+
+        return newChart;
     }
 
-    // updateChart(data.aggregations.construction_years.buckets);
-    // updateChart(data.aggregations.construction_decades.buckets);
-    updateChart(data.aggregations.construction_end_decades.buckets);
+    // createChart(data.aggregations.construction_years.buckets);
+    // createChart(data.aggregations.construction_decades.buckets);
+    createChart("#decadeEndChart", data.aggregations.construction_end_decades.buckets);
+    createChart("#decadeStartChart", data.aggregations.construction_decades.buckets);
 
 
 });
