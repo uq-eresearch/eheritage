@@ -58,6 +58,9 @@
         <p>
             <a href="{{record.url}}">{{record.url}}</a>
         </p>
+
+        <h2>Raw Record</h2>
+        <p><a href="{{ url_for('get_record_json', id=record_id) }}">As JSON</a></p>
     </div>
 </div>
 
