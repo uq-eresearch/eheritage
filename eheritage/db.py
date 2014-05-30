@@ -66,7 +66,8 @@ def get_all_suburbs():
     return _query_field_plus_geo_bounds("suburbs", "addresses.suburb")
 
 
-def get_locations(extra_query={}, num_results=1000):
+def get_locations(num_results=1000, keyword=None, bounds=None,
+                  lga_name=None, suburb=None):
     query = {
         "size": num_results,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
@@ -78,11 +79,30 @@ def get_locations(extra_query={}, num_results=1000):
             ]
         }
     }
-    if extra_query:
-        if 'match' in extra_query:
-            query['query'] = {"match": extra_query["match"] }
-        if 'filter' in extra_query:
-            query['filter']['and'].append(extra_query["filter"])
+    if keyword:
+        query['query'] = {
+            "match": {
+                "_all": keyword
+            }
+        }
+    if bounds:
+        query['filter']['and'].append({
+                "geo_bounding_box" : {
+                    "geolocation" : bounds
+                }
+            })
+    if lga_name:
+        query['filter']['and'].append({
+                "term": {
+                    "addresses.lga_name": lga_name
+                }
+            })
+    if suburb:
+        query['filter']['and'].append({
+                "term": {
+                    "addresses.suburb": suburb
+                }
+            })
 
     return es.search(query)
 
@@ -93,7 +113,7 @@ def get_heritage_place(id):
     return es.get(id)
 
 
-def get_geogrid(precision, extra_query={}):
+def get_records_geogrid(precision, keyword=None, bounds=None):
     """
     """
 

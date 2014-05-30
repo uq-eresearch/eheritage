@@ -24,42 +24,41 @@ def search_json(search_term):
     return jsonify(simple_search(search_term)['hits'])
 
 
-def generate_location_query():
-    query = {}
-    search_term = request.args.get('keyword', '')
+def parse_location_filters():
+    """Parse filters from HTTP query parameters
 
-    north = request.args.get('north', '')
-    south = request.args.get('south', '')
-    east = request.args.get('east', '')
-    west = request.args.get('west', '')
-    if search_term:
-        query["match"] = {
-                "_all": search_term
-        }
-    if north:
-        query["filter"] = {
-            "geo_bounding_box" : {
-                "geolocation" : {
-                    "top" : north,
-                    "bottom": south,
-                    "left": west,
-                    "right": east
-                }
-            }
+    Looks for 'keyword', 'bounds', 'lga_name' and 'suburb'.
+    Returns them as a dict for parsing to get_locations()
+    """
+    filters = {}
+    filters['keyword'] = request.args.get('keyword', '')
+
+    if 'north' in request.args:
+        filters['bounds'] = {
+            "top" : request.args.get('north', ''),
+            "bottom": request.args.get('south', ''),
+            "left": request.args.get('west', ''),
+            "right": request.args.get('east', '')
         }
 
-    return query
+    if 'lga_name' in request.args:
+        filters['lga_name'] = request.args.get('lga_name', '')
+
+    if 'suburb' in request.args:
+        filters['suburb'] = request.args.get('suburb', '')
+
+    return filters
 
 @app.route("/locations.json")
 def locations_json():
-    query = generate_location_query()
+    filters = parse_location_filters()
 
     try:
         num_results = int(request.args.get('num_results', '1000'))
     except ValueError:
         num_results = 1000
 
-    results = db.get_locations(query, num_results)
+    results = db.get_locations(num_results, **filters)
     return jsonify(results)
 
 
@@ -78,10 +77,17 @@ def locations_lgas_name(lga_name):
     places = db.get_
     return jsonify(places)
 
+@app.route("/locations/search")
+def locations_search():
+    if hasattr(request.args, 'lga_name'):
+        lga_name = request.args.get('lga_name', '')
+        db.get_locations
+
+
 @app.route("/geogrid.json")
 def geogrid_json():
-    query = generate_location_query()
-    results = db.get_geogrid(3, query)
+    filters = parse_location_filters()
+    results = db.get_records_geogrid(3, **filters)
     return jsonify(results)
 
 @app.route("/api/construction_dates")
