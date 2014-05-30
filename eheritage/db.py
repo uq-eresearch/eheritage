@@ -1,7 +1,7 @@
 from eheritage import es
 
 
-def _query_field_plus_geo_bounds(field_type, field_name, max_results=1000):
+def _query_field_plus_geo_bounds(field_type, field_name, max_results=5000):
     query = {
       "aggs": {
         "field_query": {
@@ -43,7 +43,7 @@ def _query_field_plus_geo_bounds(field_type, field_name, max_results=1000):
     places = {
         field_type: [{
             "name": p['key'],
-            "count": p['doc_count'],
+            "record_count": p['doc_count'],
             "weighted_center": {
                 "lat": p['center_lat']['value'],
                 "lon": p['center_lon']['value']
