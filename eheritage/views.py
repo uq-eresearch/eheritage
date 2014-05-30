@@ -3,13 +3,129 @@ from flask import jsonify, request, send_file, session
 from flask.ext.paginate import Pagination
 from flask import current_app
 
-from injest.search_index import simple_search, get_heritage_place, get_locations
-from injest.search_index import get_elasticutils_query, get_geogrid, get_construction_dates
+from injest.search_index import simple_search
+from injest.search_index import get_elasticutils_query
 from eheritage import app
 from elasticsearch import TransportError
+import eheritage.db as db
 
 
 PAGE_SIZE = 10
+
+
+@app.route("/record/<id>.json")
+def get_record_json(id):
+    result = db.get_heritage_place(id)
+    return jsonify(result['_source'])
+
+@app.route("/search/<search_term>.json")
+def search_json(search_term):
+    results = simple_search(search_term)
+    return jsonify(simple_search(search_term)['hits'])
+
+
+def generate_location_query():
+    query = {}
+    search_term = request.args.get('keyword', '')
+
+    north = request.args.get('north', '')
+    south = request.args.get('south', '')
+    east = request.args.get('east', '')
+    west = request.args.get('west', '')
+    if search_term:
+        query["match"] = {
+                "_all": search_term
+        }
+    if north:
+        query["filter"] = {
+            "geo_bounding_box" : {
+                "geolocation" : {
+                    "top" : north,
+                    "bottom": south,
+                    "left": west,
+                    "right": east
+                }
+            }
+        }
+
+    return query
+
+@app.route("/locations.json")
+def locations_json():
+    query = generate_location_query()
+
+    try:
+        num_results = int(request.args.get('num_results', '1000'))
+    except ValueError:
+        num_results = 1000
+
+    results = db.get_locations(query, num_results)
+    return jsonify(results)
+
+
+@app.route("/locations/suburbs")
+def locations_suburbs():
+    suburbs = db.get_all_suburbs()
+    return jsonify(suburbs)
+
+@app.route("/locations/lgas")
+def locations_lgas():
+    lgas = db.get_all_lgas()
+    return jsonify(lgas)
+
+@app.route("/locations/lgas/<lga_name>")
+def locations_lgas_name(lga_name):
+    places = db.get_
+    return jsonify(places)
+
+@app.route("/geogrid.json")
+def geogrid_json():
+    query = generate_location_query()
+    results = db.get_geogrid(3, query)
+    return jsonify(results)
+
+@app.route("/api/construction_dates")
+def construction_dates():
+    dates = db.get_construction_dates()
+
+    return jsonify(dates)
+
+#####################
+## FRONT END
+#####################
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/record/<id>")
+def get_record(id):
+    result = db.get_heritage_place(id)
+    return render_template("record.html",
+        record_id = result['_id'],
+        record = result['_source'])
+
+@app.route("/map")
+def map():
+    query = prepare_keyword_search()
+    num_results = query.count()
+
+    return render_template("map.html",
+        count=num_results)
+
+
+@app.route("/timeline")
+def timeline():
+    return render_template("timeline.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/ember/")
+def ember():
+    return send_file("templates/ember.html")
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -20,18 +136,6 @@ def request_wants_json():
 
     return mimetype_wants or 'json' in request.args
 
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-@app.route("/ember/")
-def ember():
-    return send_file("templates/ember.html")
 
 def prepare_keyword_search():
     search_term = request.args.get('keyword', '')
@@ -100,85 +204,3 @@ def search():
         facets = results.facets,
         adv_search = adv_search,
         pagination=pagination)
-
-
-@app.route("/record/<id>")
-def get_record(id):
-    result = get_heritage_place(id)
-    return render_template("record.html",
-        record_id = result['_id'],
-        record = result['_source'])
-
-@app.route("/record/<id>.json")
-def get_record_json(id):
-    result = get_heritage_place(id)
-    return jsonify(result['_source'])
-
-@app.route("/search/<search_term>.json")
-def search_json(search_term):
-    results = simple_search(search_term)
-    return jsonify(simple_search(search_term)['hits'])
-
-
-def generate_location_query():
-    query = {}
-    search_term = request.args.get('keyword', '')
-
-    north = request.args.get('north', '')
-    south = request.args.get('south', '')
-    east = request.args.get('east', '')
-    west = request.args.get('west', '')
-    if search_term:
-        query["match"] = {
-                "_all": search_term
-        }
-    if north:
-        query["filter"] = {
-            "geo_bounding_box" : {
-                "geolocation" : {
-                    "top" : north,
-                    "bottom": south,
-                    "left": west,
-                    "right": east
-                }
-            }
-        }
-
-    return query
-
-@app.route("/locations.json")
-def locations_json():
-    query = generate_location_query()
-
-    try:
-        num_results = int(request.args.get('num_results', '1000'))
-    except ValueError:
-        num_results = 1000
-
-    results = get_locations(query, num_results)
-    return jsonify(results)
-
-@app.route("/geogrid.json")
-def geogrid_json():
-    query = generate_location_query()
-    results = get_geogrid(3, query)
-    return jsonify(results)
-
-@app.route("/map")
-def map():
-    query = prepare_keyword_search()
-    num_results = query.count()
-
-    return render_template("map.html",
-        count=num_results)
-
-
-@app.route("/timeline")
-def timeline():
-    return render_template("timeline.html")
-
-@app.route("/api/construction_dates")
-def construction_dates():
-    dates = get_construction_dates()
-
-    return jsonify(dates)
