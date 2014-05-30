@@ -3,6 +3,7 @@ from eheritage.utils import IterableAwareEncoder
 from flask.ext.assets import Environment, Bundle
 from eheritage.flask_elasticsearch import ElasticSearch
 import os
+import logging
 
 app = Flask(__name__)
 
@@ -17,6 +18,16 @@ app.config.from_envvar('EHERITAGE_SETTINGS', silent=True)
 
 es = ElasticSearch(app)
 
+
+
+### Setup Logging
+# stream_handler = logging.StreamHandler()
+# stream_handler.setLevel(logging.DEBUG)
+# loggers = [logging.getLogger('elasticsearch')]#,
+#            #logging.getLogger('elasticsearch.trace')]
+# for logger in loggers:
+#     logger.setLevel(logging.DEBUG)
+#     logger.addHandler(stream_handler)
 
 
 
