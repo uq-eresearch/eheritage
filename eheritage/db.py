@@ -1,7 +1,6 @@
 from eheritage import es
 
 
-
 def _query_field_plus_geo_bounds(field_type, field_name, max_results=1000):
     query = {
       "aggs": {
@@ -60,14 +59,24 @@ def _query_field_plus_geo_bounds(field_type, field_name, max_results=1000):
     return places
 
 def get_all_lgas():
+    """Return details of all Local Government Area
+
+    Includes name, geographic centre, bounds and number of contained records
+    """
     return _query_field_plus_geo_bounds("lgas", "addresses.lga_name")
 
 def get_all_suburbs():
+    """Return details of all Suburbs
+
+    Includes name, geographic centre, bounds and number of contained records
+    """
     return _query_field_plus_geo_bounds("suburbs", "addresses.suburb")
 
 
 def get_locations(num_results=1000, keyword=None, bounds=None,
                   lga_name=None, suburb=None):
+    """Return a set of locations matching the arguments
+    """
     query = {
         "size": num_results,
         "fields": ("geolocation.lat", "geolocation.lon", "name"),
@@ -114,9 +123,8 @@ def get_heritage_place(id):
 
 
 def get_records_geogrid(precision, keyword=None, bounds=None):
+    """Return geohash grids containing records
     """
-    """
-
     query = {
         "aggregations" : {
             "geogrid" : {
@@ -127,14 +135,12 @@ def get_records_geogrid(precision, keyword=None, bounds=None):
             }
         }
     }
-    if extra_query:
-        query['query'] = extra_query
 
     return es.search(query)
 
 
 def get_construction_dates():
-    """Return the results of a histogram query on construction start dates
+    """Return summary information of construction start and end dates
     """
     query = {
       "aggs" : {
