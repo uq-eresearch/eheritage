@@ -1,6 +1,7 @@
 from flask import Flask
 from eheritage.utils import IterableAwareEncoder
 from flask.ext.assets import Environment, Bundle
+from eheritage.flask_elasticsearch import ElasticSearch
 import os
 
 app = Flask(__name__)
@@ -8,6 +9,14 @@ app = Flask(__name__)
 
 app.config.from_object('eheritage.default_settings')
 app.config.from_envvar('EHERITAGE_SETTINGS', silent=True)
+
+
+###
+# Initialise ElasticSearch
+###
+
+es = ElasticSearch(app)
+
 
 
 
