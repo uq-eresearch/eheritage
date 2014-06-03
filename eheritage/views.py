@@ -55,7 +55,8 @@ def locations_json():
 
 @app.route("/locations/suburbs")
 def locations_suburbs():
-    suburbs = db.get_all_suburbs()
+    lga_name = request.args.get('lga_name', '')
+    suburbs = db.get_all_suburbs(lga_name=lga_name)
     return jsonify(suburbs)
 
 @app.route("/locations/lgas")

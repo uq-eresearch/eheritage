@@ -47,7 +47,8 @@ class EHeritageS(S):
 def get_elasticutils_query():
     return es.prepare_elasticutils_query(EHeritageS())
 
-def _query_field_plus_geo_bounds(field_type, field_name, max_results=5000):
+def _query_field_plus_geo_bounds(field_type, field_name,
+                                 max_results=5000, extra_filter=None):
     query = {
       "aggs": {
         "field_query": {
@@ -84,6 +85,14 @@ def _query_field_plus_geo_bounds(field_type, field_name, max_results=5000):
       "size": 0
     }
 
+    if extra_filter:
+        query['query'] = {
+            'filtered': {
+                'filter': extra_filter
+            }
+        }
+
+
     results = es.search(query)
 
     places = {
@@ -111,12 +120,20 @@ def get_all_lgas():
     """
     return _query_field_plus_geo_bounds("lgas", "addresses.lga_name")
 
-def get_all_suburbs():
+def get_all_suburbs(lga_name):
     """Return details of all Suburbs
 
     Includes name, geographic centre, bounds and number of contained records
     """
-    return _query_field_plus_geo_bounds("suburbs", "addresses.suburb")
+    extra_filter = None
+    if lga_name:
+        extra_filter = {
+            'term': {
+                'addresses.lga_name': lga_name
+            }
+        }
+    return _query_field_plus_geo_bounds("suburbs", "addresses.suburb",
+        extra_filter=extra_filter)
 
 
 def get_locations(num_results=1000, keyword=None, bounds=None,
