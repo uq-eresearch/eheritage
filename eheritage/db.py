@@ -12,6 +12,13 @@ class EHeritageS(S):
             }
         }
 
+    def process_filter_exists(self, key, val, action):
+        return {
+            'exists': {
+                "field": key
+            }
+        }
+
     def process_filter_geoboundingbox(self, key, val, action):
         """
         http://elasticutils.readthedocs.org/en/latest/api.html#elasticutils.S
