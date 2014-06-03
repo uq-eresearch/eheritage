@@ -79,6 +79,7 @@ map.addLayer(MapQuestOpen_OSM);
 var lgas;
 $.getJSON("/locations/lgas", function(data) {
   lgas = data.lgas;
+  reloadRecords();
 });
 
 var locationFilter = new L.LocationFilter().addTo(map);
@@ -118,20 +119,12 @@ function addClusteredRecords(query) {
               $.each(cluster.getAllChildMarkers(), function( index, marker ) {
                 count += marker.options.lga.record_count;
               });
-              return L.divIcon({
-                className: 'leaflet-marker-icon marker-cluster lga-marker leaflet-zoom-animated leaflet-clickable',
-                html: '<div><span>'+count+'</span></div>',
-                iconSize: new L.Point(40, 40)
-              });
+              return lgaIcon(count);
             }
         });
         $.each(lgas, function( index, lga ) {
           if(bounds.contains([lga.weighted_center.lat, lga.weighted_center.lon])) {
-            var myIcon = L.divIcon({
-              className: 'leaflet-marker-icon marker-cluster lga-marker leaflet-zoom-animated leaflet-clickable',
-              html: '<div><span>'+lga.record_count+'</span></div>',
-              iconSize: new L.Point(40, 40)
-            });
+            var myIcon = lgaIcon(lga.record_count);
             var marker = L.marker([lga.weighted_center.lat, lga.weighted_center.lon], {
               icon: myIcon,
               title: lga.name,
@@ -172,6 +165,14 @@ function addClusteredRecords(query) {
       }
     });
 
+    function lgaIcon(count) {
+      return L.divIcon({
+        className: 'leaflet-marker-icon marker-cluster lga-marker leaflet-zoom-animated leaflet-clickable',
+        html: '<div><span>'+count+'</span></div>',
+        iconSize: new L.Point(40, 40)
+      });
+    }
+
     function browseToUrl(e) {
         window.open(this.options.url);
     }
@@ -191,14 +192,6 @@ function addClusteredRecords(query) {
       }
     }
 }
-
-
-var query = {
-    keyword: $('input[name="keyword"]').val()
-}
-addClusteredRecords(query);
-
-
 
 map.on('moveend', function(e) {
     reloadRecords();
@@ -313,6 +306,10 @@ function createQuery() {
         keyword: $('input[name="keyword"]').val()
     }
 }
+
+$('input[name="keyword"]').change(function() {
+  reloadRecords();
+});
 
 </script>
 
