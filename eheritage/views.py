@@ -4,7 +4,7 @@ from flask.ext.paginate import Pagination
 from flask import current_app
 
 from injest.search_index import simple_search
-from injest.search_index import get_elasticutils_query
+# from injest.search_index import get_elasticutils_query
 from eheritage import app
 from elasticsearch import TransportError
 import eheritage.db as db
@@ -145,7 +145,7 @@ def request_wants_json():
 
 def prepare_keyword_search():
     search_term = request.args.get('keyword', '')
-    query = get_elasticutils_query()
+    query = db.get_elasticutils_query()
     session['search_term'] = search_term
 
     if search_term:

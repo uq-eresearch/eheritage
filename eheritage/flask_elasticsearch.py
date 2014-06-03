@@ -33,3 +33,9 @@ class ElasticSearch(object):
                                  index=index,
                                  doc_type=doc_type,
                                  **kwargs)
+
+    def prepare_elasticutils_query(self, query):
+        host = current_app.config['ES_HOST']
+        index = current_app.config['ES_INDEX']
+        doctype = current_app.config['ES_DOCTYPE']
+        return query.es(urls=[host]).indexes(index).doctypes(doctype)

@@ -16,9 +16,6 @@ from flask import current_app
 from flask import g
 
 
-from elasticutils import S
-
-
 def get_es():
     es = getattr(g, '_es', None)
     if es is None:
@@ -30,48 +27,6 @@ def get_es():
     return es
 
 
-class EHeritageS(S):
-    def process_query_match_and(self, key, val, action):
-        return {
-            'match': {
-                key: {
-                    'query': val,
-                    'operator': 'and'
-                }
-            }
-        }
-
-    def process_filter_geoboundingbox(self, key, val, action):
-        """
-        http://elasticutils.readthedocs.org/en/latest/api.html#elasticutils.S
-        See http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-geo-bounding-box-filter.html
-        """
-        top_left_lat, top_left_lon, bottom_right_lat, bottom_right_lon = val
-        geofilter = {
-            'geo_bounding_box': {
-                key: {
-                    "top_left" : {
-                        "lat" : top_left_lat,
-                        "lon" : top_left_lon
-                    },
-                    "bottom_right" : {
-                        "lat" : bottom_right_lat,
-                        "lon" : bottom_right_lon
-                    }
-
-                }
-            }
-        }
-        return geofilter
-
-
-
-def get_elasticutils_query():
-    ES_HOST = current_app.config['ES_HOST']
-    ES_INDEX = current_app.config['ES_INDEX']
-    ES_ALIAS = current_app.config['ES_ALIAS']
-    ES_DOCTYPE = current_app.config['ES_DOCTYPE']
-    return EHeritageS().es(urls=[ES_HOST]).indexes(ES_INDEX).doctypes(ES_DOCTYPE)
 
 
 def reindex(source, target):
