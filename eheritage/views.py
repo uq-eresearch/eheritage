@@ -1,13 +1,9 @@
 from flask import render_template, flash, redirect
 from flask import jsonify, request, send_file, session
 from flask.ext.paginate import Pagination
-from flask import current_app
 
-from injest.search_index import simple_search
-# from injest.search_index import get_elasticutils_query
-from eheritage import app
+from eheritage import app, db
 from elasticsearch import TransportError
-import eheritage.db as db
 
 
 PAGE_SIZE = 10
@@ -17,11 +13,6 @@ PAGE_SIZE = 10
 def get_record_json(id):
     result = db.get_heritage_place(id)
     return jsonify(result['_source'])
-
-@app.route("/search/<search_term>.json")
-def search_json(search_term):
-    results = simple_search(search_term)
-    return jsonify(simple_search(search_term)['hits'])
 
 
 def parse_location_filters():
