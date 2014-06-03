@@ -84,3 +84,12 @@ header.navbar {
 .results .address {
     font-size: 13px;
 }
+
+
+.lga-marker {
+  background-color: rgba(120, 188, 255, 0.6);
+}
+
+.lga-marker div {
+  background-color: rgba(30, 144, 255, 0.6);
+}

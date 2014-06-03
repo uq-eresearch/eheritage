@@ -59,22 +59,27 @@
 
 
 <script>
+var MAX_LOCATIONS = 2000;
 
-var map = L.map('map');
+var map = L.map('map', {
+  center : [-27.45, 139],
+  zoom : 4
+});
 
 // create the tile layer with correct attribution
 var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
-
-
 var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
     subdomains: '1234'
 });
-
-map.setView([-27.45, 139], 4);
 map.addLayer(MapQuestOpen_OSM);
+
+var lgas;
+$.getJSON("/locations/lgas", function(data) {
+  lgas = data.lgas;
+});
 
 var locationFilter = new L.LocationFilter().addTo(map);
 locationFilter.on("change", function (e) {
@@ -84,28 +89,73 @@ locationFilter.on("enabled", function () {
   reloadRecords();
 });
 locationFilter.on("disabled", function () {
+  locationFilter._ne=undefined;
+  locationFilter._sw=undefined;
   reloadRecords();
 });
 
-function addClusteredRecords(query) {
-    // var markers = new L.MarkerClusterGroup({ chunkedLoading: true });
+function hitCount(query, f) {
+    var queryCopy = jQuery.extend(true, {}, query);
+    queryCopy.num_results=0;
     jQuery.ajax({
         url: "{{ url_for('locations_json') }}",
-        data: query,
+        data: queryCopy,
         dataType: "json"
     }).done(function(locations) {
-        updateCount(locations);
-        if(locations.hits.hits.length > 100 && map.getZoom() < 16) {
-          updateCount("Found "+ locations.hits.total +
-            " records in this area. Search or zoom-in to a location to refine.");
-        } else {
-          if(locations.hits.total > locations.hits.hits.length) {
-            updateCount("Displaying " + locations.hits.hits.length + " records of "+
-              locations.hits.total +" found in this area.");
-          } else {
-            updateCount("Displaying " + locations.hits.hits.length + " records found in this area.");
+      f(locations.hits.total);
+    });
+}
+
+function addClusteredRecords(query) {
+    hitCount(query, function(total) {
+      updateCount("Found "+ total +
+        " records in this area. Search or zoom-in to a location to refine.");
+      if(total > MAX_LOCATIONS) {
+        var bounds = L.bounds([query.north, query.east], [query.south, query.west]);
+        var lgaMarkerClusterGroup = new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+              var count = 0;
+              $.each(cluster.getAllChildMarkers(), function( index, marker ) {
+                count += marker.options.lga.record_count;
+              });
+              return L.divIcon({
+                className: 'leaflet-marker-icon marker-cluster lga-marker leaflet-zoom-animated leaflet-clickable',
+                html: '<div><span>'+count+'</span></div>',
+                iconSize: new L.Point(40, 40)
+              });
+            }
+        });
+        $.each(lgas, function( index, lga ) {
+          if(bounds.contains([lga.weighted_center.lat, lga.weighted_center.lon])) {
+            var myIcon = L.divIcon({
+              className: 'leaflet-marker-icon marker-cluster lga-marker leaflet-zoom-animated leaflet-clickable',
+              html: '<div><span>'+lga.record_count+'</span></div>',
+              iconSize: new L.Point(40, 40)
+            });
+            var marker = L.marker([lga.weighted_center.lat, lga.weighted_center.lon], {
+              icon: myIcon,
+              title: lga.name,
+              lga: lga
+            });
+            marker.on('click', function(e) {
+              //TODO sometimes this just zooms in without any other effect.
+              //I think this should setup an lga query filter which will only select heritages places from that lga
+              //if the hit count is > MAX_LOCATIONS then show the suburbs otherwise show the heritage places
+              map.setView([e.target.options.lga.weighted_center.lat,
+                e.target.options.lga.weighted_center.lon], map.getZoom()+1);
+            });
+            lgaMarkerClusterGroup.addLayer(marker);
           }
-          var markers = new L.LayerGroup();
+        });
+        replaceMarkerLayer(lgaMarkerClusterGroup);
+      } else {
+        query.num_results=MAX_LOCATIONS;
+        jQuery.ajax({
+            url: "{{ url_for('locations_json') }}",
+            data: query,
+            dataType: "json"
+        }).done(function(locations) {
+          var markers = new L.MarkerClusterGroup();
           $.each(locations.hits.hits, function( index, hit ) {
             var marker = L.marker(
                 L.latLng(hit.fields["geolocation.lat"][0], hit.fields["geolocation.lon"][0]),
@@ -117,15 +167,9 @@ function addClusteredRecords(query) {
             marker.on('click', browseToUrl);
             markers.addLayer(marker);
           });
-        }
-        if (typeof(gMarkers) != "undefined") {
-            map.removeLayer(gMarkers);
-            gMarkers = undefined;
-        }
-        if(markers) {
-          map.addLayer(markers);
-          gMarkers = markers;
-        }
+          replaceMarkerLayer(markers);
+        });
+      }
     });
 
     function browseToUrl(e) {
@@ -134,6 +178,17 @@ function addClusteredRecords(query) {
 
     function updateCount(message) {
         $('.record-count p').html(message);
+    }
+
+    function replaceMarkerLayer(markers) {
+      if (typeof(gMarkers) != "undefined") {
+          map.removeLayer(gMarkers);
+          gMarkers = undefined;
+      }
+      if(markers) {
+        map.addLayer(markers);
+        gMarkers = markers;
+      }
     }
 }
 
@@ -223,22 +278,42 @@ $( "#location" ).autocomplete({
   }
 });
 
+function intersection(b1, b2) {
+  if(b1.intersects(b2)) {
+    var east = Math.min(b1.getEast(), b2.getEast());
+    var west = Math.max(b1.getWest(), b2.getWest());
+    var north = Math.min(b1.getNorth(), b2.getNorth());
+    var south = Math.max(b1.getSouth(), b2.getSouth());
+    return L.latLngBounds([south, west], [north, east]);
+  } else {
+    return null;
+  }
+}
+
 function reloadRecords() {
+    addClusteredRecords(createQuery());
+}
+
+function createQuery() {
     var bounds;
     if(locationFilter.isEnabled()) {
-      bounds = locationFilter.getBounds();
+      if(locationFilter.getBounds().intersects(map.getBounds())) {
+        bounds = intersection(locationFilter.getBounds(), map.getBounds());
+      } else {
+        bounds = locationFilter.getBounds();
+      }
     } else {
       bounds = map.getBounds();
     }
-    var query = {
+    return {
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),
         west: bounds.getWest(),
         keyword: $('input[name="keyword"]').val()
     }
-    addClusteredRecords(query);
 }
+
 </script>
 
 
