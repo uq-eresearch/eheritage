@@ -169,7 +169,7 @@ def search():
         query = query.query(**{'construction_start__gte': construction_from})
         adv_search = True
     if construction_to:
-        query = query.query(**{'construction_end__lte': construction_to})
+        # query = query.query(**{'construction_end__lte': construction_to})
         query = query.query(**{'construction_start__lte': construction_to})
         adv_search = True
 
