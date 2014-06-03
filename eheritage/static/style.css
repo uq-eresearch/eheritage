@@ -179,3 +179,18 @@ body {
 .lga-marker div {
   background-color: rgba(30, 144, 255, 0.6);
 }
+
+
+
+/************
+ * TIMELINE *
+ ************/
+
+.d3chart text {
+    /*fill: white;*/
+    font: 10px sans-serif;
+    text-anchor: middle;
+}
+.d3chart rect, .d3chart text {
+    cursor: pointer;
+}

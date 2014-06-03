@@ -8,15 +8,6 @@
     <!-- D3.js -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
 
-<style>
-.d3chart text {
-    /*fill: white;*/
-    font: 10px sans-serif;
-    text-anchor: middle;
-}
-</style>
-
-
 {% endblock %}
 
 {% block content %}
@@ -24,9 +15,10 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Construction Started Decade</h2>
+        <p>Click a bar to view places constructed in that decade.</p>
         <div class="d3chart" id="decadeStartChart"></div>
-        <h2>Construction Ended Decade</h2>
-        <div class="d3chart" id="decadeEndChart"></div>
+<!--         <h2>Construction Ended Decade</h2>
+        <div class="d3chart" id="decadeEndChart"></div> -->
     </div>
 </div>
 
@@ -62,6 +54,9 @@ d3.json("/api/construction_dates", function (data) {
             .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; })
             .on("click", function(d, i) {
                 console.log(d);
+                var from = d.key,
+                    to = d.key + 9;
+                window.location = "/search/?construction-from=" + from + "&construction-to=" + to;
 
             })
             .on("mouseover", function(d, i) {d3.select(this).attr("fill", "steelblue")})
@@ -86,7 +81,7 @@ d3.json("/api/construction_dates", function (data) {
 
     // createChart(data.aggregations.construction_years.buckets);
     // createChart(data.aggregations.construction_decades.buckets);
-    createChart("#decadeEndChart", data.aggregations.construction_end_decades.buckets);
+    // createChart("#decadeEndChart", data.aggregations.construction_end_decades.buckets);
     createChart("#decadeStartChart", data.aggregations.construction_decades.buckets);
 
 
