@@ -163,11 +163,22 @@ def search():
     address_term = request.args.get('address', '')
     creator_term = request.args.get('creator', '')
 
+    construction_from = request.args.get('construction-from', '')
+    construction_to = request.args.get('construction-to', '')
+
     if address_term:
         query = query.query(**{'address__match_phrase': address_term})
         adv_search = True
     if creator_term:
         query = query.query(**{'architects__match_phrase': creator_term})
+        adv_search = True
+
+    if construction_from:
+        query = query.query(**{'construction_start__gte': construction_from})
+        adv_search = True
+    if construction_to:
+        query = query.query(**{'construction_end__lte': construction_to})
+        query = query.query(**{'construction_start__lte': construction_to})
         adv_search = True
 
     query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects.raw')

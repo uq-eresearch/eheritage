@@ -83,6 +83,18 @@
           </div>
 
           <div class="form-group">
+            <label for="construction-from" class="col-sm-2 control-label">Construction From</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="construction-from" name="construction-from" value="{{ request.args.get('construction-from', '') }}" placeholder="Enter year (yyyy)">
+            </div>
+            <label for="construction-to" class="col-sm-2 control-label">Construction To</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="construction-to" name="construction-to" value="{{ request.args.get('construction-to', '') }}" placeholder="Enter year (yyyy)">
+            </div>
+
+          </div>
+
+          <div class="form-group">
             <div class="col-sm-2 col-md-offset-8">
               <input type="submit" class="btn btn-default" value="Search">
             </div>
