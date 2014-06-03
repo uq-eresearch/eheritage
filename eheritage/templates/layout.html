@@ -20,7 +20,7 @@
         <div class="container">
             <a href="/" class="navbar-brand">Australian e-Heritage Portal</a>
         </div>
-        <div class="navbar navbar-default container">
+        <div class="navbar container">
             <nav class="collapse navbar-collapse navbar-responsive-collapse">
                 <ul class="nav nav-pills">
                     <li><a href="/">Home</a></li>
@@ -33,7 +33,8 @@
         </div>
     </div>
 
-    <div class="container main-content">
+<div class="main-content">
+    <div class="container">
 
         <div class="row">
             {% with messages = get_flashed_messages() %}
@@ -53,9 +54,12 @@
         {% endblock %}
 
     </div>
+</div>
 
+<div class="footer">
     <div class="container">
-        <p>&copy; 2014 <a href="http://www.uq.edu.au">The University of Queensland</a></p>
+        <p class="copyright">&copy; 2014 <a href="http://www.uq.edu.au">The University of Queensland</a> / <a href="https://www.fedarch.org/">FAIMS</a></p>
     </div>
+</div>
   </body>
 </html>

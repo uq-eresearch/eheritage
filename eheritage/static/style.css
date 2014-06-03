@@ -46,23 +46,75 @@ ul li .active {
 }
 
 body {
-    /*padding-top: 58px;*/
-    background-color: #E3E3E3;
+    background-color: #AD530B;
+    background: url(/static/images/5917956976_43d0e169c0_o.jpg) no-repeat center center fixed;
+    background-size: cover;
 }
 
 /*
  * Top Navbar
  */
-.header {
-    background-color: rgb(206, 216, 201);
-}
-.navbar {
-    background-color: aliceblue;
+
+.header .navbar-brand {
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 3.750rem;
+    color: white;
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.42);
+    padding-top: 20px;
 }
 
-.container {
-    background-color: white;
+.header {
+    background-color: rgba(50,50,50,0.8);
+    padding-bottom: 2px;
+    border-bottom: 2px solid black;
+    margin-bottom: 10px;
 }
+
+.header .navbar {
+    margin-bottom: 0px;
+}
+
+.header .nav-pills>li>a {
+    border-radius: 0px;
+    padding-bottom: 4px;
+}
+.header .nav-pills>li>a:hover, .header .nav-pills>li>a:focus {
+    background-color: transparent;
+    border-bottom: 4px solid white;
+}
+
+.header .nav-pills a {
+    font-family: sans-serif;
+    font-size: 18px;
+    color: white;
+}
+
+.main-content {
+    background-color: white;
+    padding-bottom: 30px;
+}
+
+/********
+ * Footer
+ *********/
+.footer {
+    background-color: #3D352E;
+    /*background-color: rgba(50,50,50,0.9);*/
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+.footer p {
+    margin: 16px;
+}
+.footer .copyright, .footer .copyright a {
+    color: rgb(210, 210, 210);
+    font-size: 16px;
+}
+
+
+
 
 .search-widget {
     background-color: antiquewhite;

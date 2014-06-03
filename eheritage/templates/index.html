@@ -2,13 +2,16 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-12">
-        <p class="lead">Welcome to the Australian E-Heritage Prototype. Explore the heritage records using the Search and Map links above.</p>
-    </div>
+
+<div class="page-header">
+  <h2>Search</h2>
 </div>
 
-
+<div class="row">
+    <div class="col-md-12">
+        <p>Search Australian Heritage Records, or explore using the Map and Timeline pages.</p>
+    </div>
+</div>
 <div class="row">
 
     <div class="col-md-8 col-md-offset-2">
@@ -24,12 +27,12 @@
                 </ul>
             </div>
 
-
+        <form  method="get" name="search" action="/search/">
             <div class="col-md-9 search-tools">
               <div class="tab-content">
                 <div class="tab-pane active" id="what">
                     <div class="form-group">
-                        <input type="text" class="form-control input-lg" placeholder="Keyword search">
+                        <input type="text" class="form-control input-lg" placeholder="Keyword search" name="keyword">
                     </div>
                     <div class="form-group pull-right">
                         <button type="button" class="btn btn-primary btn-lg">Search</button>
@@ -46,14 +49,32 @@
                 </div>
               </div>
             </div>
+        </form>
         </div>
     </div>
 </div>
 
 
-<div class="row">
-    <div class="col-md-12">
-        <p>Welcome to the Australian E-Heritage Prototype. Explore the heritage records using the Search and Map links above.</p>
-    </div>
+<div class="page-header">
+  <h2>Federated Heritage Databases</h2>
 </div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h3>Queensland</h3>
+    <p>The Queensland Heritage Register is a list of places of cultural heritage significance to Queensland to be protected for present and future generations.</p>
+    <p><a class="btn btn-default" href="http://www.ehp.qld.gov.au/heritage/qld-register/index.html" role="button">View details &raquo;</a></p>
+  </div>
+  <div class="col-md-4">
+    <h3>Victoria</h3>
+    <p>The Victorian Heritage Register lists the State’s most significant heritage places and objects.</p>
+    <p><a class="btn btn-default" href="http://www.dpcd.vic.gov.au/heritage/victorian-heritage-register" role="button">View details &raquo;</a></p>
+ </div>
+  <div class="col-md-4">
+    <h3>Beyond</h3>
+    <p>In the future the e-Heritage Portal will include records of heritage places and objects from all over Australia.</p>
+    <p><a class="btn btn-default" href="http://www.environment.gov.au/topics/heritage" role="button">View details &raquo;</a></p>
+  </div>
+</div>
+
 {% endblock %}
