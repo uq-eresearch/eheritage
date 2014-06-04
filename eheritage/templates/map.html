@@ -59,7 +59,7 @@
 
 
 <script>
-var MAX_LOCATIONS = 2000;
+var MAX_LOCATIONS = 1000;
 
 var map = L.map('map', {
   center : [-27.45, 139],
@@ -77,9 +77,13 @@ var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z
 map.addLayer(MapQuestOpen_OSM);
 
 var lgas;
+var suburbs;
 $.getJSON("/locations/lgas", function(data) {
   lgas = data.lgas;
   reloadRecords();
+});
+$.getJSON("/locations/suburbs", function(data) {
+  suburbs = data.suburbs;
 });
 
 var locationFilter = new L.LocationFilter().addTo(map);
@@ -112,56 +116,13 @@ function addClusteredRecords(query) {
       updateCount("Found "+ total +
         " records in this area. Search or zoom-in to a location to refine.");
       if(total > MAX_LOCATIONS) {
-        var bounds = L.bounds([query.north, query.east], [query.south, query.west]);
-        var lgaMarkerClusterGroup = new L.MarkerClusterGroup({
-            iconCreateFunction: function(cluster) {
-              var count = 0;
-              $.each(cluster.getAllChildMarkers(), function( index, marker ) {
-                count += marker.options.lga.record_count;
-              });
-              return lgaIcon(count);
-            }
-        });
-        $.each(lgas, function( index, lga ) {
-          if(bounds.contains([lga.weighted_center.lat, lga.weighted_center.lon])) {
-            var myIcon = lgaIcon(lga.record_count);
-            var marker = L.marker([lga.weighted_center.lat, lga.weighted_center.lon], {
-              icon: myIcon,
-              title: lga.name,
-              lga: lga
-            });
-            marker.on('click', function(e) {
-              //TODO sometimes this just zooms in without any other effect.
-              //I think this should setup an lga query filter which will only select heritages places from that lga
-              //if the hit count is > MAX_LOCATIONS then show the suburbs otherwise show the heritage places
-              map.setView([e.target.options.lga.weighted_center.lat,
-                e.target.options.lga.weighted_center.lon], map.getZoom()+1);
-            });
-            lgaMarkerClusterGroup.addLayer(marker);
-          }
-        });
-        replaceMarkerLayer(lgaMarkerClusterGroup);
+        if(map.getZoom() > 12) {
+          cluster(query, suburbs);
+        } else {
+          cluster(query, lgas);
+        }
       } else {
-        query.num_results=MAX_LOCATIONS;
-        jQuery.ajax({
-            url: "{{ url_for('locations_json') }}",
-            data: query,
-            dataType: "json"
-        }).done(function(locations) {
-          var markers = new L.MarkerClusterGroup();
-          $.each(locations.hits.hits, function( index, hit ) {
-            var marker = L.marker(
-                L.latLng(hit.fields["geolocation.lat"][0], hit.fields["geolocation.lon"][0]),
-                {
-                    title: hit.fields.name[0],
-                    url: "/record/" + hit['_id']
-                }
-            );
-            marker.on('click', browseToUrl);
-            markers.addLayer(marker);
-          });
-          replaceMarkerLayer(markers);
-        });
+        heritagePlaceCluster(query);
       }
     });
 
@@ -191,6 +152,60 @@ function addClusteredRecords(query) {
         gMarkers = markers;
       }
     }
+
+  function cluster(query, source) {
+    var bounds = L.bounds([query.north, query.east], [query.south, query.west]);
+    var markers = new L.MarkerClusterGroup({
+        iconCreateFunction: function(cluster) {
+          var count = 0;
+          $.each(cluster.getAllChildMarkers(), function( index, marker ) {
+            count += marker.options.src.record_count;
+          });
+          return lgaIcon(count);
+        }
+    });
+    $.each(source, function( index, elem ) {
+      if(elem.weighted_center && elem.weighted_center.lat && elem.weighted_center.lon &&
+          bounds.contains([elem.weighted_center.lat, elem.weighted_center.lon])) {
+        var icon = lgaIcon(elem.record_count);
+        var marker = L.marker([elem.weighted_center.lat, elem.weighted_center.lon], {
+          icon: icon,
+          title: elem.name,
+          src: elem
+        });
+        marker.on('click', function(e) {
+          map.setView([e.target.options.src.weighted_center.lat,
+            e.target.options.src.weighted_center.lon], map.getZoom()+1);
+        });
+        console.log(marker);
+        markers.addLayer(marker);
+      }
+    });
+    replaceMarkerLayer(markers);
+  }
+
+  function heritagePlaceCluster(query) {
+    var cluster = new L.MarkerClusterGroup();
+    query.num_results=MAX_LOCATIONS;
+    jQuery.ajax({
+        url: "{{ url_for('locations_json') }}",
+        data: query,
+        dataType: "json"
+    }).done(function(locations) {
+      $.each(locations.hits.hits, function( index, hit ) {
+        var marker = L.marker(
+            L.latLng(hit.fields["geolocation.lat"][0], hit.fields["geolocation.lon"][0]),
+            {
+                title: hit.fields.name[0],
+                url: "/record/" + hit['_id']
+            }
+        );
+        marker.on('click', browseToUrl);
+        cluster.addLayer(marker);
+      });
+      replaceMarkerLayer(cluster);
+    });
+  }
 }
 
 map.on('moveend', function(e) {
