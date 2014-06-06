@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='locationfilter.css') }}" />
     <script src="{{ url_for('static', filename='locationfilter.js') }}"></script>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaflet.draw.css') }}" />
+    <script src="{{ url_for('static', filename='leaflet.draw.js') }}"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -86,17 +89,44 @@ $.getJSON("/locations/suburbs", function(data) {
   suburbs = data.suburbs;
 });
 
-var locationFilter = new L.LocationFilter().addTo(map);
-locationFilter.on("change", function (e) {
-  reloadRecords();
+var locationFilter;
+L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw location filter bounds';
+L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Click and drag to draw location filter bounds';
+L.drawLocal.draw.handlers.simpleshape.tooltip.end = 'Release mouse to finish location filter bounds';
+var drawControl = new L.Control.Draw({
+              draw: {
+              rectangle: {
+                shapeOptions: {
+                  clickable: false
+                }
+              },
+              circle: false,
+              polyline: false,
+              polygon: false,
+              marker: false
+
+              },
+    edit: false
 });
-locationFilter.on("enabled", function () {
-  reloadRecords();
-});
-locationFilter.on("disabled", function () {
-  locationFilter._ne=undefined;
-  locationFilter._sw=undefined;
-  reloadRecords();
+map.addControl(drawControl);
+map.on('draw:created', function (e) {
+  if(locationFilter) {
+    locationFilter.off("disabled");
+    map.removeLayer(locationFilter);
+  }
+  locationFilter = new L.LocationFilter({bounds: e.layer.getBounds(), enable: false}).addTo(map);
+  locationFilter.on("change", function (e) {
+    reloadRecords();
+  });
+  locationFilter.on("enabled", function () {
+    reloadRecords();
+  });
+  locationFilter.on("disabled", function () {
+    map.removeLayer(locationFilter);
+    locationFilter = undefined;
+    reloadRecords();
+  });
+  locationFilter.enable();
 });
 
 function hitCount(query, f) {
@@ -304,7 +334,7 @@ function reloadRecords() {
 
 function createQuery() {
     var bounds;
-    if(locationFilter.isEnabled()) {
+    if(locationFilter) {
       if(locationFilter.getBounds().intersects(map.getBounds())) {
         bounds = intersection(locationFilter.getBounds(), map.getBounds());
       } else {
