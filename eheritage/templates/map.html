@@ -29,27 +29,21 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-1">
-            <p>
-                <input name="keyword" size="80" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Type keywords">
-            </p>
-    </div>
+<div class="row" style="margin-top: 5px;">
+  <div class="col-md-6">
+    <label for="keywords"><span style="padding-left:1px">Search for keywords</span></label>
+    <input id="keywords" name="keyword" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Type keywords" class="wide-input">
+  </div>
+  <div class="col-md-6">
+    <label for="location"><span style="padding-left:1px">Search for location</span></label>
+    <input id="location" type="text" placeholder="Type a place name" class="wide-input">
+  </div>
 </div>
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-1">
-        <p>
-            Search for location<br>
-            <input id="location" size="80" type="text" placeholder="Start typing a place name">
-        </p>
-    </div>
-</div>
-
-<div class="row">
+<div class="row" style="margin-top:6px;">
     <div class="col-md-12 record-count">
         {% if count %}
-            <p>{{ count }} records in area.</p>
+            {{ count }} records in area.
         {% endif %}
     </div>
 </div>
@@ -94,19 +88,18 @@ L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw location filter bounds';
 L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Click and drag to draw location filter bounds';
 L.drawLocal.draw.handlers.simpleshape.tooltip.end = 'Release mouse to finish location filter bounds';
 var drawControl = new L.Control.Draw({
-              draw: {
-              rectangle: {
-                shapeOptions: {
-                  clickable: false
-                }
-              },
-              circle: false,
-              polyline: false,
-              polygon: false,
-              marker: false
-
-              },
-    edit: false
+  draw: {
+    rectangle: {
+      shapeOptions: {
+        clickable: false
+      }
+    },
+    circle: false,
+    polyline: false,
+    polygon: false,
+    marker: false
+  },
+  edit: false
 });
 map.addControl(drawControl);
 map.on('draw:created', function (e) {
@@ -169,7 +162,7 @@ function addClusteredRecords(query) {
     }
 
     function updateCount(message) {
-        $('.record-count p').html(message);
+        $('.record-count').html(message);
     }
 
     function replaceMarkerLayer(markers) {

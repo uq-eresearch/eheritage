@@ -194,3 +194,8 @@ body {
 .d3chart rect, .d3chart text {
     cursor: pointer;
 }
+.wide-input {
+  display:block;
+  width:100%;
+  padding:0;
+}
