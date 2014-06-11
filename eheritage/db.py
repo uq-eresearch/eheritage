@@ -48,7 +48,8 @@ def get_elasticutils_query():
     return es.prepare_elasticutils_query(EHeritageS())
 
 def _query_field_plus_geo_bounds(field_type, field_name,
-                                 max_results=5000, extra_filter=None):
+                                 max_results=5000, extra_filter=None,
+                                 keyword=None):
     query = {
       "aggs": {
         "field_query": {
@@ -85,12 +86,20 @@ def _query_field_plus_geo_bounds(field_type, field_name,
       "size": 0
     }
 
-    if extra_filter:
-        query['query'] = {
-            'filtered': {
+    if extra_filter or keyword:
+        query['query'] = {'filtered': {}}
+
+        if extra_filter:
+            query['query']['filtered']['filter'] = {
                 'filter': extra_filter
             }
-        }
+
+        if keyword:
+            query['query']['filtered']['query'] = {
+                'match': {
+                    '_all': keyword
+                }
+            }
 
 
     results = es.search(query)
@@ -113,27 +122,27 @@ def _query_field_plus_geo_bounds(field_type, field_name,
     }
     return places
 
-def get_all_lgas():
+def get_all_lgas(keyword=None):
     """Return details of all Local Government Area
 
     Includes name, geographic centre, bounds and number of contained records
     """
-    return _query_field_plus_geo_bounds("lgas", "addresses.lga_name")
+    return _query_field_plus_geo_bounds("lgas", "addresses.lga_name",
+                keyword=keyword)
 
-def get_all_suburbs(lga_name):
+def get_all_suburbs(lga_name, keyword=None):
     """Return details of all Suburbs
 
     Includes name, geographic centre, bounds and number of contained records
     """
-    extra_filter = None
+    extra_filter = {}
     if lga_name:
-        extra_filter = {
-            'term': {
+        extra_filter['term'] = {
                 'addresses.lga_name': lga_name
             }
-        }
+
     return _query_field_plus_geo_bounds("suburbs", "addresses.suburb",
-        extra_filter=extra_filter)
+        extra_filter=extra_filter, keyword=keyword)
 
 
 def get_locations(num_results=1000, keyword=None, bounds=None,
