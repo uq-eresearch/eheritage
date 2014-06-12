@@ -154,28 +154,26 @@ def search():
 
     query = prepare_keyword_search()
 
+#######
+### Add Advanced Search Restrictions to Query
     adv_search = False
 
-    address_term = request.args.get('address', '')
-    creator_term = request.args.get('creator', '')
+    advanced_search_terms = {
+        'address': 'address__match_phrase',
+        'creator': 'creator__match_phrase',
+        'construction-from': 'construction_start__gte',
+        'construction-to': 'construction_start__lte',
+    }
 
-    construction_from = request.args.get('construction-from', '')
-    construction_to = request.args.get('construction-to', '')
+    for request_arg, query_type in advanced_search_terms.items():
+        value = request.args.get(request_arg, '')
 
-    if address_term:
-        query = query.query(**{'address__match_phrase': address_term})
-        adv_search = True
-    if creator_term:
-        query = query.query(**{'architects__match_phrase': creator_term})
-        adv_search = True
+        if value:
+            query = query.query(**{query_type: value})
+            adv_search = True
 
-    if construction_from:
-        query = query.query(**{'construction_start__gte': construction_from})
-        adv_search = True
-    if construction_to:
-        query = query.query(**{'construction_start__lte': construction_to})
-        adv_search = True
-
+########
+### Setup Faceting
     active_facets = {}
     # Apply Facet Filters
     facetable_fields = ['addresses.suburb', 'state', 'architects.raw']
@@ -213,7 +211,6 @@ def search():
 
 
     if request_wants_json():
-        # return jsonify(items=[x.to_json() for x in items])
         return jsonify({
             'results': results.results,
             'count': results.count,
