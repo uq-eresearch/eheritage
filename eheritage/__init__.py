@@ -69,3 +69,4 @@ except IOError:
 
 
 from eheritage import views
+from eheritage import filters

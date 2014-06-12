@@ -34,64 +34,48 @@
     </form>
   </div>
 
-  <div class="tab-pane form-horizontal {% if  adv_search %} active{% endif %}" id="advanced">
+{% macro search_field(field_name, placeholder=False) -%}
+  {% if not placeholder -%}
+    {% set placeholder = 'Enter ' + field_name -%}
+  {% endif -%}
+  {% if kwargs.pop('disabled', False) -%}
+    {% set is_disabled = 'disabled' -%}
+  {% endif -%}
+    <label for="{{field_name}}_adv" class="col-sm-2 control-label">{{field_name|capitalize}}</label>
+    <div class="col-sm-4">
+      <input class="form-control" name="{{field_name|to_arg}}"
+             id="{{field_name|to_arg}}_adv" value="{{ request.args.get(field_name, '') }}"
+             placeholder="{{placeholder}}" {{is_disabled}}>
+    </div>
+{%- endmacro %}
+
+  <div class="tab-pane form-horizontal {% if adv_search %} active{% endif %}" id="advanced">
     <div class="row">
       <div class="col-md-10">
         <form  method="get" name="search">
           <div class="form-group">
-            <label for="keyword_adv" class="col-sm-2 control-label">Keyword</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="keyword" id="keyword_adv" value="{{ request.args.get('keyword', '') }}" placeholder="Enter keyword">
-            </div>
-            <label for="title" class="col-sm-2 control-label">Title</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="title" id="title" placeholder="Enter title"  disabled>
-            </div>
+            {{ search_field('keyword') }}
+            {{ search_field('title', disabled=True) }}
           </div>
 
           <div class="form-group">
-            <label for="period" class="col-sm-2 control-label">Period</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="period" id="period" placeholder="Enter period" disabled>
-            </div>
-            <label for="address" class="col-sm-2 control-label">Address</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="address" id="address" value="{{ request.args.get('address', '') }}" placeholder="Enter Address">
-            </div>
+            {{ search_field('period', disabled=True) }}
+            {{ search_field('address') }}
           </div>
 
           <div class="form-group">
-            <label for="building_type" class="col-sm-2 control-label">Building Type</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="building_type" id="building_type" placeholder="Enter building type"  disabled>
-            </div>
-            <label for="creator" class="col-sm-2 control-label">Creator</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="creator" id="creator" value="{{ request.args.get('creator', '') }}"  placeholder="Enter creator">
-            </div>
+            {{ search_field('building type', disabled=True) }}
+            {{ search_field('creator') }}
           </div>
 
           <div class="form-group">
-            <label for="style" class="col-sm-2 control-label">Style</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="style" id="style" placeholder="Enter style"  disabled>
-            </div>
-            <label for="description" class="col-sm-2 control-label">Description</label>
-            <div class="col-sm-4">
-              <input class="form-control" name="description" id="description" placeholder="Enter description"  disabled>
-            </div>
+            {{ search_field('style', disabled=True) }}
+            {{ search_field('description', disabled=True) }}
           </div>
 
           <div class="form-group">
-            <label for="construction-from" class="col-sm-2 control-label">Construction From</label>
-            <div class="col-sm-4">
-              <input type="text" class="form-control" id="construction-from" name="construction-from" value="{{ request.args.get('construction-from', '') }}" placeholder="Enter year (yyyy)">
-            </div>
-            <label for="construction-to" class="col-sm-2 control-label">Construction To</label>
-            <div class="col-sm-4">
-              <input type="text" class="form-control" id="construction-to" name="construction-to" value="{{ request.args.get('construction-to', '') }}" placeholder="Enter year (yyyy)">
-            </div>
-
+            {{ search_field('construction from', placeholder='Enter year (yyyy)') }}
+            {{ search_field('construction to', placeholder='Enter year (yyyy)') }}
           </div>
 
           <div class="form-group">
