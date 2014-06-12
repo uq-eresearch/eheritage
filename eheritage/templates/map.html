@@ -73,16 +73,6 @@ var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z
 });
 map.addLayer(MapQuestOpen_OSM);
 
-var lgas;
-var suburbs;
-$.getJSON("/locations/lgas", function(data) {
-  lgas = data.lgas;
-  reloadRecords();
-});
-$.getJSON("/locations/suburbs", function(data) {
-  suburbs = data.suburbs;
-});
-
 var locationFilter;
 L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw location filter bounds';
 L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Click and drag to draw location filter bounds';
@@ -139,10 +129,15 @@ function addClusteredRecords(query) {
       updateCount("Found "+ total +
         " records in this area. Search or zoom-in to a location to refine.");
       if(total > MAX_LOCATIONS) {
+        var keyword = $('input[name="keyword"]').val();
         if(map.getZoom() > 12) {
-          cluster(query, suburbs);
+          $.getJSON("/locations/suburbs?keyword="+keyword, function(data) {
+            cluster(query, data.suburbs);
+          });
         } else {
-          cluster(query, lgas);
+          $.getJSON("/locations/lgas?keyword="+keyword, function(data) {
+            cluster(query, data.lgas);
+          });
         }
       } else {
         heritagePlaceCluster(query);
@@ -200,7 +195,6 @@ function addClusteredRecords(query) {
           map.setView([e.target.options.src.weighted_center.lat,
             e.target.options.src.weighted_center.lon], map.getZoom()+1);
         });
-        console.log(marker);
         markers.addLayer(marker);
       }
     });
@@ -349,6 +343,7 @@ $('input[name="keyword"]').change(function() {
   reloadRecords();
 });
 
+reloadRecords();
 </script>
 
 
