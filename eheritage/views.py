@@ -150,6 +150,7 @@ def prepare_keyword_search():
 
 @app.route("/search/")
 def search():
+    """Return HTML page of search results"""
 
     query = prepare_keyword_search()
 
