@@ -92,24 +92,18 @@
 
 <div class="row">
     <div class="col-md-3 facets">
-{% set shown_facets = [
+{% set facets_to_display = [
     ('Suburb', 'addresses.suburb', 'title'),
     ('State', 'state', 'upper'),
     ('Architect', 'architects.raw', 'title')
 ] -%}
-        {% for title, facet, case in shown_facets %}
+        {% for title, facet, case in facets_to_display %}
       <div class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
         <div class="panel-body">
           <ol>
             {% for term in facets[facet].terms %}
-                {% if case == 'title' %}
-                    <li>{{ term.term|title }} ({{ term.count }})</li>
-                {% elif case == 'upper' %}
-                    <li>{{ term.term|upper }} ({{ term.count }})</li>
-                {% else %}
-                    <li>{{ term.term }} ({{ term.count }})</li>
-                {% endif %}
+              <li><a href="{{request.path + '?' + facet + '=' + term.term}}" data-field="{{facet}}" data-value="{{term.term}}">{{ term.term|apply_filter(case) }}</a> ({{ term.count }})</li>
             {% endfor %}
           </ol>
           </div>
@@ -142,6 +136,16 @@
     </div>
 </div>
 
+
+<script>
+// $(".facets a").on("click", function(e) {
+//   console.log(e);
+//   console.log(this);
+//   debugger;
+//   $(this).data('field');
+// });
+
+</script>
 
 
 {% endblock %}
