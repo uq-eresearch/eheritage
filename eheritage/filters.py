@@ -1,4 +1,5 @@
 from eheritage import app
+from flask import request, url_for
 import string
 
 @app.template_filter('underscoreize')
@@ -18,3 +19,16 @@ def apply_filter(s, filter_name):
     if filter_name in filters:
         return filters[filter_name](s)
     return s
+
+@app.template_global()
+def url_for_custom_params(endpoint, **kwargs):
+    """Add or subtract query params when generating a url
+
+    Similar to url_for()
+    """
+    args = dict(request.args)
+    args.update(kwargs)
+
+    # Filter out blank values
+    args = {key: value for (key, value) in args.items() if value}
+    return url_for(endpoint, **args)

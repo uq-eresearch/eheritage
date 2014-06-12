@@ -173,11 +173,20 @@ def search():
         query = query.query(**{'construction_start__gte': construction_from})
         adv_search = True
     if construction_to:
-        # query = query.query(**{'construction_end__lte': construction_to})
         query = query.query(**{'construction_start__lte': construction_to})
         adv_search = True
 
-    query = query.facet('state', 'addresses.lga_name', 'addresses.suburb', 'architects.raw')
+    active_facets = {}
+    # Apply Facet Filters
+    facetable_fields = ['addresses.suburb', 'state', 'architects.raw']
+    for facet_field in facetable_fields:
+        facet_value = request.args.get(facet_field, '')
+        if facet_value:
+            active_facets[facet_field] = facet_value
+            query = query.query(**{facet_field: facet_value})
+
+    query = query.facet('state', 'addresses.lga_name',
+                        'addresses.suburb', 'architects.raw')
 
     try:
         page = int(request.args.get('page', 1))
@@ -216,4 +225,5 @@ def search():
         results = results.results,
         facets = results.facets,
         adv_search = adv_search,
+        active_facets = active_facets,
         pagination=pagination)

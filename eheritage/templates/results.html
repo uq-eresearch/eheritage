@@ -102,9 +102,21 @@
         <div class="panel-heading">{{title}}</div>
         <div class="panel-body">
           <ol>
-            {% for term in facets[facet].terms %}
-              <li><a href="{{request.path + '?' + facet + '=' + term.term}}" data-field="{{facet}}" data-value="{{term.term}}">{{ term.term|apply_filter(case) }}</a> ({{ term.count }})</li>
-            {% endfor %}
+            {% if facet in active_facets %}
+              <li>
+                <strong>{{ active_facets[facet]|apply_filter(case) }}
+                  <a href="{{ url_for_custom_params('search', **{facet: None}) }}">[X]</a>
+                </strong>
+              </li>
+            {% else %}
+              {% for term in facets[facet].terms %}
+                <li>
+                  <a href="{{ url_for_custom_params('search', **{facet: term.term}) }}" data-field="{{facet}}"
+                     data-value="{{term.term}}">{{ term.term|apply_filter(case) }}</a>
+                     ({{ term.count }})
+                </li>
+              {% endfor %}
+            {% endif %}
           </ol>
           </div>
       </div>
@@ -120,7 +132,6 @@
         <li>
                 <b><a href="{{ url_for('get_record', id=hit._id) }}">[{{ hit._source.state }}] {{ hit._source.name|title }}</a></b>
                  - <a href="{{ hit._source.url }}">Source record</a>
-                 <!-- - <a href="{{ url_for('get_record_json', id=hit._id) }}">json</a> -->
                  <br>
                  {% with address = hit._source.addresses|first %}
                     {% if address %}
