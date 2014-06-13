@@ -90,13 +90,16 @@ def get_architectural_styles(place_id):
             for architectural_style_name in architectural_styles]
 
 def get_item_categories(place_id):
-    item_categories_q = """SELECT item_category_name
-                          FROM item_categories_places, item_groups_name
-                          JOIN item_categories on item_categories_places.item_category_id = item_categories.id
-                          JOIN item_groups on item_categories_places.item_group_id = item_groups.id
-                          WHERE place_id = :place_id"""
+    item_categories_q = """SELECT ig.group_name, ic.item_category_name
+                           FROM vhd.item_categories_places icp
+                           LEFT JOIN item_groups ig ON icp.item_group_id = ig.id
+                           LEFT JOIN item_categories ic ON icp.item_category_id = ic.id
+                           WHERE place_id = :place_id
+                           ORDER BY sort_order"""
     item_categories = engine.execute(text(item_categories_q), place_id=place_id)
-    return [item_category_name[0] for item_category_name in item_categories]
+    return [{'group': group, 'name': name}
+                for group, name in item_categories.fetchall()]
+
 
 def massage_before_indexing(place):
     place['state'] = 'VIC'
@@ -131,8 +134,15 @@ def all_places():
        places.significance, places.vhr_number, places.longitude,
        places.latitude, constructions.construction_start,
        constructions.construction_end, places.nat_trust_listing_number,
+       places.nat_estate_listing_number, status_names.status_name,
+       place_owners.place_owner_name
        FROM places
        LEFT JOIN constructions ON places.id = constructions.place_id
+       LEFT JOIN status_names
+           ON  places.status_id = status_names.id
+           AND status_names.published_online = 1
+       LEFT JOIN place_owners
+           ON status_names.place_owner_id = place_owners.id
     """
 
     result = cursor.execute(places_query)
@@ -142,6 +152,7 @@ def all_places():
         place['act_categories'] = get_act_categories(row_id)
         place['architects'] = get_architects(row_id)
         place['architectural_styles'] = get_architectural_styles(row_id)
+        place['categories'] = get_item_categories(row_id)
 
         massage_before_indexing(place)
 #    print(json.dumps(place, indent=4))
