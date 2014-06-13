@@ -4,8 +4,8 @@
 """Test docopt example.
 
 Usage:
-    eheritage.py index qld <filename>
-    eheritage.py index vic
+    eheritage.py index qld <filename> [--index=<index_name>]
+    eheritage.py index vic [--index=<index_name>]
     eheritage.py get_index_version
     eheritage.py create_index <index_name>
     eheritage.py delete_index <index_name>
@@ -70,5 +70,5 @@ if __name__ == '__main__':
                 print search_index.load_qld_data(args['<filename>'])
 
             elif args['vic']:
-                print search_index.stream_vic_data()
+                print search_index.stream_vic_data(args['--index'])
 

@@ -167,8 +167,9 @@ def load_vic_data():
             raise RequestError
 
 
-def stream_vic_data():
-    ES_INDEX = current_app.config['ES_INDEX']
+def stream_vic_data(index_name=None):
+    if not index_name:
+        index_name = current_app.config['ES_INDEX']
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
 
     num = vic.get_number_of_places()
