@@ -58,13 +58,15 @@ def locations_suburbs():
     filters = parse_location_filters()
     lga_name = request.args.get('lga_name', '')
     suburbs = db.get_all_suburbs(lga_name=lga_name,
-                                 keyword=filters.get('keyword'))
+                                 keyword=filters.get('keyword'),
+                                 bounds=filters.get('bounds'))
     return jsonify(suburbs)
 
 @app.route("/locations/lgas")
 def locations_lgas():
     filters = parse_location_filters()
-    lgas = db.get_all_lgas(keyword=filters.get('keyword'))
+    lgas = db.get_all_lgas(keyword=filters.get('keyword'),
+                           bounds=filters.get('bounds'))
     return jsonify(lgas)
 
 @app.route("/locations/lgas/<lga_name>")

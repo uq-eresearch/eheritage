@@ -49,7 +49,7 @@ def get_elasticutils_query():
 
 def _query_field_plus_geo_bounds(field_type, field_name,
                                  max_results=5000, extra_filter=None,
-                                 keyword=None):
+                                 keyword=None, bounds=None):
     query = {
       "aggs": {
         "field_query": {
@@ -83,23 +83,35 @@ def _query_field_plus_geo_bounds(field_type, field_name,
           }
         }
       },
+      "query": {
+        "filtered": {
+          "filter": {
+            "and": [
+            {
+                "exists": {"field": "geolocation"}
+            }]
+          }
+        }
+      },
       "size": 0
     }
 
-    if extra_filter or keyword:
-        query['query'] = {'filtered': {}}
-
-        if extra_filter:
-            query['query']['filtered']['filter'] = {
-                'filter': extra_filter
-            }
-
-        if keyword:
-            query['query']['filtered']['query'] = {
-                'match': {
-                    '_all': keyword
+    if bounds:
+        query['query']['filtered']['filter']['and'].append({
+                "geo_bounding_box" : {
+                    "geolocation" : bounds
                 }
+            })
+
+    if extra_filter:
+        query['query']['filtered']['filter']['and'].append(extra_filter)
+
+    if keyword:
+        query['query']['filtered']['query'] = {
+            'match': {
+                '_all': keyword
             }
+        }
 
 
     results = es.search(query)
@@ -122,15 +134,15 @@ def _query_field_plus_geo_bounds(field_type, field_name,
     }
     return places
 
-def get_all_lgas(keyword=None):
+def get_all_lgas(keyword=None, bounds=None):
     """Return details of all Local Government Area
 
     Includes name, geographic centre, bounds and number of contained records
     """
     return _query_field_plus_geo_bounds("lgas", "addresses.lga_name",
-                keyword=keyword)
+                keyword=keyword, bounds=bounds)
 
-def get_all_suburbs(lga_name, keyword=None):
+def get_all_suburbs(lga_name, keyword=None, bounds=None):
     """Return details of all Suburbs
 
     Includes name, geographic centre, bounds and number of contained records
@@ -142,7 +154,7 @@ def get_all_suburbs(lga_name, keyword=None):
             }
 
     return _query_field_plus_geo_bounds("suburbs", "addresses.suburb",
-        extra_filter=extra_filter, keyword=keyword)
+        extra_filter=extra_filter, keyword=keyword, bounds=bounds)
 
 
 def get_locations(num_results=1000, keyword=None, bounds=None,
