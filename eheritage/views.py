@@ -126,6 +126,10 @@ def timeline():
 def about():
     return render_template("about.html")
 
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
 @app.route("/ember/")
 def ember():
     return send_file("templates/ember.html")
