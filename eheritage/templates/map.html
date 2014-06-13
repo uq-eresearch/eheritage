@@ -131,11 +131,19 @@ function addClusteredRecords(query) {
       if(total > MAX_LOCATIONS) {
         var keyword = $('input[name="keyword"]').val();
         if(map.getZoom() > 12) {
-          $.getJSON("/locations/suburbs?keyword="+keyword, function(data) {
+          $.ajax({
+            url: "/locations/suburbs",
+            data: query,
+            dataType: "json"
+          }).done(function(data) {
             cluster(query, data.suburbs);
           });
         } else {
-          $.getJSON("/locations/lgas?keyword="+keyword, function(data) {
+          $.ajax({
+            url: "/locations/lgas",
+            data: query,
+            dataType: "json"
+          }).done(function(data) {
             cluster(query, data.lgas);
           });
         }
