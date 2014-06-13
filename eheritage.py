@@ -59,7 +59,7 @@ if __name__ == '__main__':
             print search_index.delete_index(args['<index_name>'])
 
         elif args['get_index_version']:
-            print 'Not Implemented!'
+            print search_index.get_index_version()
 
         elif args['reindex']:
             print search_index.reindex(args['<source>'], args['<target>'])

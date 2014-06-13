@@ -129,6 +129,11 @@ def delete_index(index_name):
     return es.indices.delete(index_name)
 
 
+def get_index_version():
+    index_name = current_app.config['ES_INDEX']
+    return es.indices.get_alias(index_name)
+
+
 def load_qld_data(qld_filename):
     from qld import parse_ahpi_xml
 
