@@ -82,7 +82,7 @@ def get_architectural_styles(place_id):
     architectural_styles_q = \
         """SELECT architectural_style_name
            FROM architectural_styles_places asp
-           JOIN architectural_styles as ON asp.architectural_style_id = as.id
+           JOIN architectural_styles ars ON asp.architectural_style_id = ars.id
            WHERE place_id = :place_id"""
     architectural_styles = engine.execute(text(architectural_styles_q),
                                           place_id=place_id)
