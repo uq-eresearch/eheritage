@@ -185,7 +185,7 @@ def stream_vic_data(index_name=None):
                         elasticsearch.helpers.streaming_bulk(es.get_es(),
                             indexable_objects_iter(vic.all_places(),
                                 index_name, ES_DOCTYPE
-                            ), chunk_size=20
+                            ), chunk_size=100
                       ), width=80, expected_size=num):
         index = result.get('index', {})
         status = index.get('status')
