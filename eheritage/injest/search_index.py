@@ -13,7 +13,7 @@ from flask import current_app
 from eheritage import es
 
 from flask import g
-
+import vic
 
 def reindex(source, target):
     """ReIndex data from source into target
@@ -153,7 +153,6 @@ def make_es_index_obj(docs, es_index, es_doctype):
 
 
 def load_vic_data():
-    import vic
 
     num = vic.get_number_of_places()
     print "Importing %d Victorian Heritage Places" % num
@@ -169,7 +168,6 @@ def load_vic_data():
 
 
 def stream_vic_data():
-    import vic
     ES_INDEX = current_app.config['ES_INDEX']
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
 

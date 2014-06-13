@@ -54,36 +54,40 @@ def get_number_of_places():
 
 
 def get_addresses(place_id):
-    addresses_q = """SELECT street_number, street_name, suburb, state, postcode, lga_names.lga_name
-                     FROM addresses
-                     LEFT JOIN lga_names on addresses.lga_name_id = lga_names.id
+    addresses_q = """SELECT street_number, street_name, suburb, state,
+                            postcode, lga_names.lga_name
+                     FROM addresses a
+                     LEFT JOIN lga_names ON a.lga_name_id = lga_names.id
                      WHERE place_id = :place_id"""
     addresses = engine.execute(text(addresses_q), place_id=place_id)
     return [dict(address) for address in addresses]
 
 def get_act_categories(place_id):
     act_categories_q = """SELECT act_category_name
-                          FROM act_categories_places
-                          JOIN act_categories on act_categories_places.act_category_id = act_categories.id
+                          FROM act_categories_places acp
+                          JOIN act_categories ac ON acp.act_category_id = ac.id
                           WHERE place_id = :place_id"""
     act_categories = engine.execute(text(act_categories_q), place_id=place_id)
     return [act_category[0] for act_category in act_categories]
 
 def get_architects(place_id):
     architects_q = """SELECT architect_name
-                          FROM architects_places
-                          JOIN architects on architects_places.architect_id = architects.id
-                          WHERE place_id = :place_id"""
+                      FROM architects_places ap
+                      JOIN architects ON ap.architect_id = architects.id
+                      WHERE place_id = :place_id"""
     architects = engine.execute(text(architects_q), place_id=place_id)
     return [architect_name[0] for architect_name in architects]
 
 def get_architectural_styles(place_id):
-    architectural_styles_q = """SELECT architectural_style_name
-                          FROM architectural_styles_places
-                          JOIN architectural_styles on architectural_styles_places.architectural_style_id = architectural_styles.id
-                          WHERE place_id = :place_id"""
-    architectural_styles = engine.execute(text(architectural_styles_q), place_id=place_id)
-    return [architectural_style_name[0] for architectural_style_name in architectural_styles]
+    architectural_styles_q = \
+        """SELECT architectural_style_name
+           FROM architectural_styles_places asp
+           JOIN architectural_styles as ON asp.architectural_style_id = as.id
+           WHERE place_id = :place_id"""
+    architectural_styles = engine.execute(text(architectural_styles_q),
+                                          place_id=place_id)
+    return [architectural_style_name[0]
+            for architectural_style_name in architectural_styles]
 
 def get_item_categories(place_id):
     item_categories_q = """SELECT item_category_name
@@ -107,7 +111,8 @@ def massage_before_indexing(place):
 
     try:
         place['geolocation'] = {
-            "lat": float(place['latitude']), 'lon': float(place['longitude'])
+            'lat': float(place['latitude']),
+            'lon': float(place['longitude'])
         }
     except TypeError:
         pass
@@ -121,12 +126,13 @@ def all_places():
     """
 
 
-    places_query = """
-    SELECT places.id, places.place_name, places.location, places.significance,
-           places.vhr_number, places.longitude, places.latitude,
-           constructions.construction_start, constructions.construction_end
-    FROM places
-    LEFT JOIN constructions on places.id = constructions.place_id
+    places_query = \
+    """SELECT places.id, places.place_name, places.location,
+       places.significance, places.vhr_number, places.longitude,
+       places.latitude, constructions.construction_start,
+       constructions.construction_end, places.nat_trust_listing_number,
+       FROM places
+       LEFT JOIN constructions ON places.id = constructions.place_id
     """
 
     result = cursor.execute(places_query)
