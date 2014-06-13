@@ -20,7 +20,7 @@ def reindex(source, target):
 
     Used when a new mapping has been created
     """
-    elasticsearch.helpers.reindex(es, source, target)
+    elasticsearch.helpers.reindex(es.get_es(), source, target)
 
 
 def create_index(index_name):
@@ -97,7 +97,7 @@ def create_index(index_name):
             }
         }
     }
-    return es.indices.create(index_name, mapping_body)
+    return es.get_es().indices.create(index_name, mapping_body)
 
 
 def add_heritage_place(place):
@@ -110,7 +110,8 @@ def add_heritage_place(place):
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
     try:
         id = "%s-%s" % (place['state'], place['id'])
-        result = es.index(index=ES_INDEX, doc_type=ES_DOCTYPE, id=id, body=place)
+        result = es.get_es().index(index=ES_INDEX, doc_type=ES_DOCTYPE,
+            id=id, body=place)
         # print result
     except AttributeError as e:
         print e
@@ -126,12 +127,12 @@ def delete_index(index_name):
     if not index_name:
         index_name = current_app.config['ES_INDEX']
 
-    return es.indices.delete(index_name)
+    return es.get_es().indices.delete(index_name)
 
 
 def get_index_version():
     index_name = current_app.config['ES_INDEX']
-    return es.indices.get_alias(index_name)
+    return es.get_es().indices.get_alias(index_name)
 
 
 def load_qld_data(qld_filename):
@@ -181,12 +182,14 @@ def stream_vic_data(index_name=None):
     print "Importing %d Victorian Heritage Places" % num
 
     for ok, result in progress.bar(
-                        elasticsearch.helpers.streaming_bulk(es,
+                        elasticsearch.helpers.streaming_bulk(es.get_es(),
                             indexable_objects_iter(vic.all_places(),
                                 index_name, ES_DOCTYPE
-                            )
+                            ), chunk_size=20
                       ), width=80, expected_size=num):
-        if not ok:
+        index = result.get('index', {})
+        status = index.get('status')
+        if not ok and status != 200:
             action, result = result.popitem()
-            doc_id = '/%s/commits/%s' % (ES_INDEX, result['_id'])
+            doc_id = '/%s/commits/%s' % (index_name, result['_id'])
             print('Failed to %s document %s: %r' % (action, doc_id, result))
