@@ -56,7 +56,7 @@ d3.json("/api/construction_dates", function (data) {
                 console.log(d);
                 var from = d.key,
                     to = d.key + 9;
-                window.location = "/search/?construction-from=" + from + "&construction-to=" + to;
+                window.location = "/search/?construction_from=" + from + "&construction_to=" + to;
 
             })
             .on("mouseover", function(d, i) {d3.select(this).attr("fill", "steelblue")})

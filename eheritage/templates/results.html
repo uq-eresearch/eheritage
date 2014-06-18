@@ -44,7 +44,7 @@
     <label for="{{field_name}}_adv" class="col-sm-2 control-label">{{field_name|capitalize}}</label>
     <div class="col-sm-4">
       <input class="form-control" name="{{field_name|to_arg}}"
-             id="{{field_name|to_arg}}_adv" value="{{ request.args.get(field_name, '') }}"
+             id="{{field_name|to_arg}}_adv" value="{{ request.args.get(field_name|to_arg, '') }}"
              placeholder="{{placeholder}}" {{is_disabled}}>
     </div>
 {%- endmacro %}

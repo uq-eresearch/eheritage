@@ -167,8 +167,8 @@ def search():
     advanced_search_terms = {
         'address': 'address__match_phrase',
         'creator': 'creator__match_phrase',
-        'construction-from': 'construction_start__gte',
-        'construction-to': 'construction_start__lte',
+        'construction_from': 'construction_start__gte',
+        'construction_to': 'construction_start__lte',
     }
 
     for request_arg, query_type in advanced_search_terms.items():
