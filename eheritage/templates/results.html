@@ -95,6 +95,8 @@
 {% set facets_to_display = [
     ('Suburb', 'addresses.suburb', 'title'),
     ('State', 'state', 'upper'),
+    ('Category Group', 'categories.group', 'title'),
+    ('Category', 'categories.name', 'title'),
     ('Architect', 'architects.raw', 'title')
 ] -%}
         {% for title, facet, case in facets_to_display %}

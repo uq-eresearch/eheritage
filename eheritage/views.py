@@ -182,15 +182,15 @@ def search():
 ### Setup Faceting
     active_facets = {}
     # Apply Facet Filters
-    facetable_fields = ['addresses.suburb', 'state', 'architects.raw']
+    facetable_fields = ['addresses.suburb', 'state', 'architects.raw',
+                        'categories.group', 'categories.name']
     for facet_field in facetable_fields:
         facet_value = request.args.get(facet_field, '')
         if facet_value:
             active_facets[facet_field] = facet_value
             query = query.query(**{facet_field: facet_value})
 
-    query = query.facet('state', 'addresses.lga_name',
-                        'addresses.suburb', 'architects.raw')
+    query = query.facet(*facetable_fields)
 
     try:
         page = int(request.args.get('page', 1))
