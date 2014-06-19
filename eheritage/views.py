@@ -130,6 +130,10 @@ def about():
 def contact():
     return render_template("contact.html")
 
+@app.route("/related-links")
+def related_links():
+    return render_template("related_links.html")
+
 @app.route("/ember/")
 def ember():
     return send_file("templates/ember.html")
