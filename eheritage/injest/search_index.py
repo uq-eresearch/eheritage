@@ -20,12 +20,10 @@ def reindex(source, target):
 
     Used when a new mapping has been created
     """
-    elasticsearch.helpers.reindex(es.get_es(), source, target)
+    return elasticsearch.helpers.reindex(es.get_es(), source, target)
 
 
 def create_index(index_name):
-    if not index_name:
-        index_name = current_app.config['ES_INDEX']
     mapping_body = {
         "mappings": {
             "heritage_place": {
@@ -48,7 +46,13 @@ def create_index(index_name):
                           "raw" : {"type" : "string", "index" : "not_analyzed"}
                         }
                     },
-
+                    "categories": {
+                        "type": "object",
+                        "properties": {
+                            "name": {"type" : "string", "index" : "not_analyzed"},
+                            "group": {"type" : "string", "index" : "not_analyzed"}
+                        }
+                    },
                     "date_created": {
                         "type": "string",
                         "index": "not_analyzed"
@@ -97,7 +101,8 @@ def create_index(index_name):
             }
         }
     }
-    return es.get_es().indices.create(index_name, mapping_body)
+    connection = es.get_es()
+    return connection.indices.create(index_name, mapping_body)
 
 
 def add_heritage_place(place):
@@ -110,7 +115,8 @@ def add_heritage_place(place):
     ES_DOCTYPE = current_app.config['ES_DOCTYPE']
     try:
         id = "%s-%s" % (place['state'], place['id'])
-        result = es.get_es().index(index=ES_INDEX, doc_type=ES_DOCTYPE,
+        connection = es.get_es()
+        result = connection.index(index=ES_INDEX, doc_type=ES_DOCTYPE,
             id=id, body=place)
         # print result
     except AttributeError as e:
@@ -120,6 +126,12 @@ def add_heritage_place(place):
 
     return True
 
+
+def update_alias(index_name):
+    connection = es.get_es()
+    alias_name = current_app.config['ES_ALIAS']
+    print connection.indices.delete_alias(name=alias_name, index="_all")
+    return connection.indices.put_alias(index=index_name, name=alias_name)
 
 def delete_index(index_name):
     """Delete the entire index of heritage places - DANGER!!
@@ -132,7 +144,9 @@ def delete_index(index_name):
 
 def get_index_version():
     index_name = current_app.config['ES_INDEX']
-    return es.get_es().indices.get_alias(index_name)
+
+    connection = es.get_es()
+    return connection.indices.get_alias(index_name)
 
 
 def load_qld_data(qld_filename):
