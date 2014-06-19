@@ -35,6 +35,14 @@ d3.json("/api/construction_dates", function (data) {
     function createChart(selector, data) {
         var barWidth = w / data.length;
 
+        var tooltip = d3.select("body")
+            .append("div")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+            .classed("timeline-tooltip", true)
+            .text("a simple tooltip");
+
         var newChart = d3.select(selector)
             .append("svg")
             .attr("width", w)
@@ -59,8 +67,19 @@ d3.json("/api/construction_dates", function (data) {
                 window.location = "/search/?construction_from=" + from + "&construction_to=" + to;
 
             })
-            .on("mouseover", function(d, i) {d3.select(this).attr("fill", "steelblue")})
-            .on("mouseout", function(d, i) {d3.select(this).attr("fill", "black")});
+            .on("mouseover", function(d, i) {
+                d3.select(this).attr("fill", "steelblue");
+                tooltip.style("visibility", "visible")
+                       .text(d.doc_count + " records");
+            })
+            .on("mouseout", function(d, i) {
+                d3.select(this).attr("fill", "black");
+                tooltip.style("visibility", "hidden");
+            })
+            .on("mousemove", function(d, i) {
+                tooltip.style("top", (d3.event.pageY-10)+"px")
+                       .style("left",(d3.event.pageX+10)+"px");
+            });
 
         bar.append("rect")
             .attr("height", function(d, i) { return y(d.doc_count); })

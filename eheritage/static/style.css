@@ -199,3 +199,9 @@ body {
   width:100%;
   padding:0;
 }
+
+.timeline-tooltip {
+    background-color: rgba(120, 188, 255, 0.97);
+    border: 1px solid black;
+    padding: 5px;
+}
