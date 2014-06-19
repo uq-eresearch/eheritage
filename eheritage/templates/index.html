@@ -38,14 +38,27 @@
                         <p>e.g., “memorial”, “church”, “Kelly”</p>
                     </div>
                     <div class="form-group pull-right">
-                        <button type="button" class="btn btn-primary btn-lg">Search</button>
+                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
                     </div>
                 </div>
                 <div class="tab-pane" id="where">
                     <p class="lead">Where</p>
                 </div>
-                <div class="tab-pane" id="when">
-                    <p class="lead">When</p>
+                <div class="tab-pane form-inline" id="when">
+                    <div>
+                        <p>Constructed Between</p>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control input-lg" size="6" placeholder="From" name="construction_from">
+                        <p class="date-range-separator"> - </p>
+                        <input type="text" class="form-control input-lg" size="6" placeholder="To" name="construction_to">
+                    </div>
+                    <div>
+                        <p>e.g., 1874 - 1883,  - 1820, 2000 - </p>
+                    </div>
+                    <div class="form-group pull-right">
+                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                    </div>
                 </div>
                 <div class="tab-pane" id="who">
                     <p class="lead">Who</p>

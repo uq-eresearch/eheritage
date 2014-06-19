@@ -180,6 +180,13 @@ body {
   background-color: rgba(30, 144, 255, 0.6);
 }
 
+/*************
+ * HOME PAGE *
+ *************/
+
+p.date-range-separator {
+    display: inline-block;
+}
 
 
 /************
