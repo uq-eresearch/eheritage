@@ -1,0 +1,19 @@
+{
+  "author": "Andre <a.gebers@uq.edu.au>",
+  "name": "sashp",
+  "description": "convert sa heritage shapefile into eheritage json format",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/uq-eresearch/eheritage.git"
+  },
+  "dependencies": {
+    "shapefile" : "0.3.0",
+    "elasticsearch" : "2.2.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
