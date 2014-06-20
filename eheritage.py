@@ -4,7 +4,7 @@
 """Test docopt example.
 
 Usage:
-    eheritage.py index qld <filename> [--index=<index_name>]
+    eheritage.py index qld <filename> [--index=<index_name>] [--dumpdir=<qld_dump>]
     eheritage.py index vic [--index=<index_name>]
     eheritage.py get_index_version
     eheritage.py create_index <index_name>
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         elif args['index']:
 
             if args['qld']:
-                print search_index.load_qld_data(args['<filename>'])
+                print search_index.load_qld_data(args['<filename>'], args['--dumpdir'])
 
             elif args['vic']:
                 print search_index.stream_vic_data(args['--index'])

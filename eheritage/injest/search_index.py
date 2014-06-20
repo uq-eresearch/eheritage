@@ -148,13 +148,17 @@ def get_index_version():
     connection = es.get_es()
     return connection.indices.get_alias(index_name)
 
+import qld_ehp_site_parser
 
-def load_qld_data(qld_filename):
+def load_qld_data(qld_filename, dumpdir=None):
     from qld import parse_ahpi_xml
 
     qld_places = parse_ahpi_xml(qld_filename)
 
     for place in progress.dots(qld_places):
+        if dumpdir:
+            extra = qld_ehp_site_parser.load_extra(place['url'], dumpdir)
+            place.update(extra)
         add_heritage_place(place)
 
 
