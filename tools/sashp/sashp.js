@@ -37,15 +37,17 @@ function nextRecord(error, record) {
     var hp = ehrtge(record);
     if(hp != null) {
       //console.log(JSON.stringify(hp, null, 2));
-      index(hp);
-      importCounter++;
-      if(importCounter%100 == 0) {
-        process.stdout.write('.');
-      }
+      index(hp, function callback() {
+        importCounter++;
+        if(importCounter%100 == 0) {
+          process.stdout.write('.');
+        }
+        reader.readRecord(nextRecord);
+      });
     } else {
       console.error('failed to create a record for heritage nr '+record.properties.HERITAGENR);
+      process.exit(2);
     }
-    reader.readRecord(nextRecord);
   }
 }
 function ehrtge(record) {
@@ -101,7 +103,7 @@ function categories(str) {
   });
   return result;
 }
-function index(record) {
+function index(record, callback) {
   client.index({
     index: 'eheritage_v2',
     type: 'heritage_place',
@@ -113,5 +115,6 @@ function index(record) {
       console.error(resp);
       process.exit(2);
     }
+    callback();
   });
 }
