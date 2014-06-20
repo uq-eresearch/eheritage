@@ -8,23 +8,6 @@ ul li .active {
     font-weight: bold;
 }
 
-/*
- * MAP STYLES
- */
-#map { height: 550px; }
-
-.info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-.info h4 {
-    margin: 0 0 5px;
-    color: #777;
-}
 
 
 
@@ -55,29 +38,31 @@ body {
  * Top Navbar
  */
 
-.header .navbar-brand {
-    font-family: sans-serif;
-    font-weight: 600;
-    font-size: 3.750rem;
-    color: white;
-    text-shadow: 2px 2px 2px rgba(0,0,0,0.42);
-    padding-top: 20px;
-}
-
 .header {
-    background-color: rgba(50,50,50,0.8);
+    background-color: rgba(50,50,50,0.9);
     padding-bottom: 2px;
     border-bottom: 2px solid black;
     margin-bottom: 10px;
 }
 
+.header .navbar-brand {
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 2.750rem;
+    color: white;
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.42);
+    padding: 15px 0px 0px 0px;
+    height: auto;
+}
+
 .header .navbar {
     margin-bottom: 0px;
+    min-height: 45px;
 }
 
 .header .nav-pills>li>a {
     border-radius: 0px;
-    padding-bottom: 4px;
+    padding-bottom: 5px;
 }
 .header .nav-pills>li>a:hover, .header .nav-pills>li>a:focus {
     background-color: transparent;
@@ -86,7 +71,7 @@ body {
 
 .header .nav-pills a {
     font-family: sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     color: white;
 }
 
@@ -116,27 +101,18 @@ body {
 
 
 
-.search-widget {
-    background-color: antiquewhite;
+/****************
+ * RESULTS PAGE *
+ ****************/
+
+li span.count {
+    float: right;
+    color: #888;
 }
 
-.search-widget {
-    border: 2px solid black;
-    margin: 15px 0px 30px 0px;
+li.more {
+    display: none;
 }
-.search-widget .sidebar {
-    border-right: 2px solid black;
-    background-color: aliceblue;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
-
-.search-widget .search-tools {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
 
 /*
  * Facet sidebar
@@ -171,6 +147,9 @@ body {
     font-size: 13px;
 }
 
+/************
+ * MAP PAGE *
+ ************/
 
 .lga-marker {
   background-color: rgba(120, 188, 255, 0.6);
@@ -180,14 +159,67 @@ body {
   background-color: rgba(30, 144, 255, 0.6);
 }
 
+/*
+ * MAP STYLES
+ */
+#map { height: 550px; }
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+
 /*************
  * HOME PAGE *
  *************/
+
+.row.topRow {
+    padding-top: 15px;
+}
 
 p.date-range-separator {
     display: inline-block;
 }
 
+#frontPageCarousel {
+    background-color: black;
+}
+#frontPageCarousel .carousel-caption {
+    background-color: rgba(0,0,0,0.7);
+    border-radius: 10px;
+}
+#frontPageCarousel .copyright {
+    font-size: 70%;
+}
+
+.search-widget {
+    background-color: antiquewhite;
+}
+
+.search-widget {
+    border: 2px solid black;
+    margin: 15px 0px 30px 0px;
+}
+.search-widget .sidebar {
+    border-right: 2px solid black;
+    background-color: aliceblue;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+
+.search-widget .search-tools {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
 
 /**************
  * ABOUT PAGE *

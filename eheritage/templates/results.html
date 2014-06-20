@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row topRow">
   <div class="col-md-10 col-md-offset-1">
     <ul class="nav nav-tabs">
       <li {% if not adv_search %} class="active"{% endif %}><a href="#keyword" data-toggle="tab">Keyword</a></li>
@@ -126,7 +126,7 @@
     </div>
 
 
-    <div class="col-md-9 results">
+    <div class="col-md-8 results">
 
         {{ pagination.info|safe }}
         <ol>
