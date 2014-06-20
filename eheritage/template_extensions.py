@@ -20,6 +20,11 @@ def apply_filter(s, filter_name):
         return filters[filter_name](s)
     return s
 
+
+@app.template_filter('head')
+def head(s, num=5):
+    return s[:num]
+
 @app.template_global()
 def url_for_custom_params(endpoint, **kwargs):
     """Add or subtract query params when generating a url
