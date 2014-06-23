@@ -1,5 +1,13 @@
 {% extends "layout.html" %}
 
+{% block head %}
+  {{ super() }}
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/select2/select2-bootstrap.css') }}" />
+    <script src="{{ url_for('static', filename='bower_components/select2/select2.min.js') }}"></script>
+{% endblock head %}
 
 {% block content %}
 
@@ -34,18 +42,40 @@
     </form>
   </div>
 
-{% macro search_field(field_name, placeholder=False) -%}
+{% macro search_field(field_name, placeholder=False, type='text') -%}
   {% if not placeholder -%}
     {% set placeholder = 'Enter ' + field_name -%}
   {% endif -%}
   {% if kwargs.pop('disabled', False) -%}
     {% set is_disabled = 'disabled' -%}
   {% endif -%}
-    <label for="{{field_name}}_adv" class="col-sm-2 control-label">{{field_name|capitalize}}</label>
+    <label for="{{field_name|to_arg}}_adv" class="col-sm-2 control-label">
+      {{field_name|capitalize}}
+    </label>
     <div class="col-sm-4">
-      <input class="form-control" name="{{field_name|to_arg}}"
-             id="{{field_name|to_arg}}_adv" value="{{ request.args.get(field_name|to_arg, '') }}"
+      <input class="form-control" name="{{field_name|to_arg}}" type="{{type}}"
+             id="{{field_name|to_arg}}_adv"
+             value="{{ request.args.get(field_name|to_arg, '') }}"
              placeholder="{{placeholder}}" {{is_disabled}}>
+    </div>
+{%- endmacro %}
+{% macro select_field(field_name, placeholder=False, type='text') -%}
+  {% if not placeholder -%}
+    {% set placeholder = 'Select ' + field_name -%}
+  {% endif -%}
+  {% if kwargs.pop('disabled', False) -%}
+    {% set is_disabled = 'disabled' -%}
+  {% endif -%}
+    <label for="{{field_name|to_arg}}_adv" class="col-sm-2 control-label">
+      {{field_name|capitalize}}
+    </label>
+    <div class="col-sm-4">
+      <select multiple class="form-control" name="{{field_name|to_arg}}"
+          id="{{field_name|to_arg}}_adv"
+          value="{{ request.args.get(field_name|to_arg, '') }}"
+          placeholder="{{placeholder}}" {{is_disabled}}>
+      </select>
+
     </div>
 {%- endmacro %}
 
@@ -64,7 +94,7 @@
           </div>
 
           <div class="form-group">
-            {{ search_field('building type', disabled=True) }}
+            {{ select_field('building type') }}
             {{ search_field('creator') }}
           </div>
 
@@ -90,8 +120,15 @@
 </div><!-- //tab-content -->
 
 
+{% macro facet_item(term, facet, case, hidden=False) -%}
+  <li {% if hidden %}class="more"{%else%}class="less"{%endif%}>
+    <a href="{{ url_for_custom_params('search', **{facet: term.term}) }}" data-field="{{facet}}"
+       data-value="{{term.term}}">{{ term.term|apply_filter(case) }}</a>
+    <span class="count">({{ term.count }})</span>
+  </li>
+{%- endmacro %}
 <div class="row">
-    <div class="col-md-3 facets">
+    <div class="col-md-4 facets">
 {% set facets_to_display = [
     ('Suburb', 'addresses.suburb', 'title'),
     ('State', 'state', 'upper'),
@@ -111,13 +148,15 @@
                 </strong>
               </li>
             {% else %}
-              {% for term in facets[facet].terms %}
-                <li>
-                  <a href="{{ url_for_custom_params('search', **{facet: term.term}) }}" data-field="{{facet}}"
-                     data-value="{{term.term}}">{{ term.term|apply_filter(case) }}</a>
-                     ({{ term.count }})
-                </li>
+              {% for term in facets[facet].terms|head(5)|sort(attribute='term') %}
+                {{ facet_item(term, facet, case) }}
               {% endfor %}
+              {% if facets[facet].terms|length > 5 %}
+                {% for term in facets[facet].terms|sort(attribute='term') %}
+                  {{ facet_item(term, facet, case, hidden=True) }}
+                {% endfor %}
+                <li><a href="#" class="show_more">Show more</a></li>
+              {% endif %}
             {% endif %}
           </ol>
           </div>
@@ -151,13 +190,26 @@
 
 
 <script>
-// $(".facets a").on("click", function(e) {
-//   console.log(e);
-//   console.log(this);
-//   debugger;
-//   $(this).data('field');
-// });
+function toggle_extended_facet_list() {
+  var parent = $(this).parent().parent();
+  var everything = parent.find('.more');
+  var biggest_only = parent.find('.less');
+  biggest_only.toggle();
+  everything.toggle();
 
+  var current_text = $(this).text();
+  if (current_text == 'Show more') {
+    $(this).text('Show less');
+  } else {
+    $(this).text('Show more')
+  }
+}
+
+$(document).ready(function() {
+  $("#building_type_adv").select2();
+
+  $('.show_more').on("click", toggle_extended_facet_list);
+});
 </script>
 
 
