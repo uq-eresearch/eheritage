@@ -6,12 +6,16 @@
 {% block head %}
     {{ super() }}
 <script src="{{ url_for('static', filename='bower_components/jquery-highlight/jquery.highlight.js') }}"></script>
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
 {% endblock %}
 
 {% block content %}
 
 <div class="row record">
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-5 col-md-offset-2">
         <h1>{{ record.name|title }}</h1>
 
         <h2>Address</h2>
@@ -23,18 +27,25 @@
         </p>
         {% endfor %}
 
-        <h2>Architectural Styles</h2>
-        <p>
-        {% for style in record.architectural_styles %}
-        {{style}}<br>
-        {% endfor %}
-        </p>
-
         <h2>Construction Period</h2>
         <p>
             {% if record.construction_start or record.construction_end %}
             {{record.construction_start}} - {{record.construction_end}}
             {% endif %}
+        </p>
+    </div>
+    <div class="col-md-4">
+
+        <div id="record-map"></div>
+    </div>
+</div>
+<div class="row record">
+    <div class="col-md-8 col-md-offset-2">
+        <h2>Architectural Styles</h2>
+        <p>
+        {% for style in record.architectural_styles %}
+        {{style}}<br>
+        {% endfor %}
         </p>
 
         <h2>Architects</h2>
@@ -73,6 +84,26 @@ for (var i = 0; i < terms.length; i++) {
     $('div.record').highlight(terms[i]);
 }
 {% endif %}
+
+
+var map = L.map('record-map', {
+  center : [-27.45, 139],
+  zoom : 3
+});
+// create the tile layer with correct attribution
+var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
+var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    subdomains: '1234'
+});
+map.addLayer(MapQuestOpen_OSM);
+
+var latlng = L.latLng({{record.geolocation.lat}}, {{record.geolocation.lon}});
+L.marker(latlng).addTo(map);
+
+
 </script>
 
 
