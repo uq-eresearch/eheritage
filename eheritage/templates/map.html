@@ -30,7 +30,7 @@
 {% block content %}
 
 <div class="row" style="margin-top: 10px;margin-bottom: 8px;">
-  <div class="col-md-6">
+  <div class="col-md-6" style="margin-bottom: 8px;">
     <div class="input-group input-group">
       <span class="input-group-addon">Search for keywords</span>
       <input id="keywords" name="keyword" type="text" value="{{ request.args.get('keyword', '') }}"
