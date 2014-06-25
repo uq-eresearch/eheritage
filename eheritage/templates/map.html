@@ -29,14 +29,19 @@
 
 {% block content %}
 
-<div class="row" style="margin-top: 5px;">
+<div class="row" style="margin-top: 10px;margin-bottom: 8px;">
   <div class="col-md-6">
-    <label for="keywords"><span style="padding-left:1px">Search for keywords</span></label>
-    <input id="keywords" name="keyword" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Type keywords" class="wide-input">
+    <div class="input-group input-group">
+      <span class="input-group-addon">Search for keywords</span>
+      <input id="keywords" name="keyword" type="text" value="{{ request.args.get('keyword', '') }}"
+        class="form-control" placeholder="Type keywords e.g. Pagoda">
+    </div>
   </div>
   <div class="col-md-6">
-    <label for="location"><span style="padding-left:1px">Search for location</span></label>
-    <input id="location" type="text" placeholder="Type a place name" class="wide-input">
+    <div class="input-group input-group">
+      <span class="input-group-addon">Search for location</span>
+      <input id="location" type="text" placeholder="Type a place name e.g. Barcaldine" class="form-control">
+    </div>
   </div>
 </div>
 
