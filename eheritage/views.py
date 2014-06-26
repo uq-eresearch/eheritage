@@ -194,7 +194,7 @@ def search():
             active_facets[facet_field] = facet_value
             query = query.query(**{facet_field: facet_value})
 
-    query = query.facet(*facetable_fields)
+    query = query.facet(*facetable_fields, size=100)
 
     try:
         page = int(request.args.get('page', 1))
