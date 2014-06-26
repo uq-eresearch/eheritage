@@ -245,57 +245,59 @@ map.on('moveend', function(e) {
 </script>
 
 <script>
-/* For use with geonames */
-$( "#location" ).autocomplete({
-  source: function( request, response ) {
-    $.ajax({
-      url: "http://ws.geonames.org/searchJSON",
-      dataType: "jsonp",
-      data: {
-        featureClass: "P",
-        country: "AU",
-        style: "full",
-        maxRows: 12,
-        name_startsWith: request.term,
-        username: 'eheritage_au'
-      },
-      success: function( data ) {
-        response( $.map( data.geonames, function( item ) {
-          return {
-            label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
-            value: item.value,
-            details: item
-          }
-        }));
-      }
-    });
-  },
-  minLength: 2,
-  select: function( event, ui ) {
-    var geonameLocation = ui.item.details;
-    var bbox = geonameLocation.bbox;
+function enable_placename_autocomplete(input_field_selector) {
+  $(input_field_selector).autocomplete({
+    source: function( request, response ) {
+      $.ajax({
+        url: "http://ws.geonames.org/searchJSON",
+        dataType: "jsonp",
+        data: {
+          featureClass: "P",
+          country: "AU",
+          style: "full",
+          maxRows: 12,
+          name_startsWith: request.term,
+          username: 'eheritage_au'
+        },
+        success: function( data ) {
+          response( $.map( data.geonames, function( item ) {
+            return {
+              label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+              value: item.value,
+              details: item
+            }
+          }));
+        }
+      });
+    },
+    minLength: 2,
+    select: function( event, ui ) {
+      var geonameLocation = ui.item.details;
+      var bbox = geonameLocation.bbox;
 
-    var southWest = L.latLng(bbox.south, bbox.west),
-        northEast = L.latLng(bbox.north, bbox.east),
-    bounds = L.latLngBounds(southWest, northEast);
+      var southWest = L.latLng(bbox.south, bbox.west),
+          northEast = L.latLng(bbox.north, bbox.east),
+      bounds = L.latLngBounds(southWest, northEast);
 
-    map.fitBounds(bounds);
+      map.fitBounds(bounds);
 
-    reloadRecords();
-    console.log(event);
-    console.log(ui);
-    console.log(this);
-    // log( ui.item ?
-    //   "Selected: " + ui.item.label :
-    //   "Nothing selected, input was " + this.value);
-  },
-  open: function() {
-    $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-  },
-  close: function() {
-    $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
-  }
-});
+      reloadRecords();
+      console.log(event);
+      console.log(ui);
+      console.log(this);
+      // log( ui.item ?
+      //   "Selected: " + ui.item.label :
+      //   "Nothing selected, input was " + this.value);
+    },
+    open: function() {
+      $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+    },
+    close: function() {
+      $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+    }
+  });
+}
+enable_placename_autocomplete("#location");
 
 function intersection(b1, b2) {
   if(b1.intersects(b2)) {
