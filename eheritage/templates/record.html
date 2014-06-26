@@ -41,19 +41,23 @@
 </div>
 <div class="row record">
     <div class="col-md-8 col-md-offset-2">
+        {% if record.architectural_styles %}
         <h2>Architectural Styles</h2>
         <p>
-        {% for style in record.architectural_styles %}
-        {{style}}<br>
-        {% endfor %}
+            {% for style in record.architectural_styles %}
+                {{style}}<br>
+            {% endfor %}
         </p>
+        {% endif %}
 
+        {% if record.architects %}
         <h2>Architects</h2>
         <p>
             {% for architect in record.architects %}
             {{architect}}<br>
             {% endfor %}
         </p>
+        {% endif %}
 
         <h2>Description</h2>
         <p>
