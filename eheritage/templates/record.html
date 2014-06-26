@@ -15,9 +15,12 @@
 {% block content %}
 
 <div class="row record">
-    <div class="col-md-5 col-md-offset-2">
+    <div class="col-md-9 col-md-offset-2">
         <h1>{{ record.name|title }}</h1>
-
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5 col-md-offset-2">
         <h2>Address</h2>
         {% for address in record.addresses %}
         <p>
@@ -33,14 +36,7 @@
             {{record.construction_start}} - {{record.construction_end}}
             {% endif %}
         </p>
-    </div>
-    <div class="col-md-4">
 
-        <div id="record-map"></div>
-    </div>
-</div>
-<div class="row record">
-    <div class="col-md-8 col-md-offset-2">
         {% if record.architectural_styles %}
         <h2>Architectural Styles</h2>
         <p>
@@ -49,6 +45,14 @@
             {% endfor %}
         </p>
         {% endif %}
+    </div>
+    <div class="col-md-4">
+
+        <div id="record-map"></div>
+    </div>
+</div>
+<div class="row record">
+    <div class="col-md-8 col-md-offset-2">
 
         {% if record.architects %}
         <h2>Architects</h2>
@@ -59,10 +63,12 @@
         </p>
         {% endif %}
 
+        {% if record.description %}
         <h2>Description</h2>
         <p>
             {{ record.description|default('')|safe }}
         </p>
+        {% endif %}
 
         <h2>Significance</h2>
         <p>
