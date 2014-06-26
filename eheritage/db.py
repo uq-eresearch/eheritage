@@ -257,3 +257,28 @@ def get_construction_dates():
     }
 
     return es.search(query)
+
+
+def get_field_values(field, num_results=5000):
+    query = {
+      "aggs": {
+        "field_values": { # Defined name
+          "terms": {
+            "field": field,
+            "size": num_results
+          }
+        }
+      },
+      "filter": {
+    # //    "term": {
+    # //      "addresses.lga_name": "YARRA CITY"  
+    # //    }
+      },
+      "size": 0
+    }
+
+    es_results = es.search(query)
+    results = [{"val": bucket['key'], "num": bucket['doc_count']}
+        for bucket in es_results['aggregations']['field_values']['buckets'] ]
+
+    return results

@@ -93,6 +93,13 @@ def construction_dates():
 
     return jsonify(dates)
 
+@app.route("/api/values/<field>")
+def get_field_values(field):
+    values = db.get_field_values(field)
+    return jsonify({
+        "field": field,
+        "results": values})
+
 #####################
 ## FRONT END
 #####################
