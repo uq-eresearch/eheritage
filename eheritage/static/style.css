@@ -9,7 +9,11 @@ ul li .active {
 }
 
 
-
+/* Always display a scroll bar, so that short pages
+    don't make the content jump around horizontally */
+html {
+    overflow-y: scroll;
+}
 
 
 /*
