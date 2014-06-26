@@ -189,12 +189,14 @@ def search():
             query = query.query(**{query_type: value})
             adv_search = True
 
+
 ########
 ### Setup Faceting
     active_facets = {}
     # Apply Facet Filters
     facetable_fields = ['addresses.suburb', 'state', 'architects.raw',
-                        'categories.group', 'categories.name']
+                        'categories.group', 'categories.name',
+                        'architectural_styles.raw']
     for facet_field in facetable_fields:
         facet_value = request.args.get(facet_field, '')
         if facet_value:
@@ -203,6 +205,12 @@ def search():
 
     query = query.facet(*facetable_fields, size=100)
 
+    faceting_adv_search_fields = ['categories.name','architectural_styles.raw']
+    for field_name in faceting_adv_search_fields:
+        if request.args.get(field_name):
+            adv_search = True
+########
+### Setup Pagination
     try:
         page = int(request.args.get('page', 1))
 

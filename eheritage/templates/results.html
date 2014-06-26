@@ -42,18 +42,19 @@
     </form>
   </div>
 
-{% macro search_field(field_name, placeholder=False, type='text') -%}
+{% macro search_field(field_name, placeholder=False, type='text', submit_name=None) -%}
   {% if not placeholder -%}
     {% set placeholder = 'Enter ' + field_name -%}
   {% endif -%}
   {% if kwargs.pop('disabled', False) -%}
     {% set is_disabled = 'disabled' -%}
   {% endif -%}
+  {% if not submit_name %}{% set submit_name = field_name %}{% endif %}
     <label for="{{field_name|to_arg}}_adv" class="col-sm-2 control-label">
       {{field_name|capitalize}}
     </label>
     <div class="col-sm-4">
-      <input class="form-control" name="{{field_name|to_arg}}" type="{{type}}"
+      <input class="form-control" name="{{submit_name|to_arg}}" type="{{type}}"
              id="{{field_name|to_arg}}_adv"
              value="{{ request.args.get(field_name|to_arg, '') }}"
              placeholder="{{placeholder}}" {{is_disabled}}>
@@ -89,12 +90,12 @@
           </div>
 
           <div class="form-group">
-            {{ search_field('period') }}
+            {{ search_field('period', submit_name='architectural_styles.raw') }}
             {{ search_field('address') }}
           </div>
 
           <div class="form-group">
-            {{ search_field('building type') }}
+            {{ search_field('building type', submit_name='categories.name') }}
             {{ search_field('creator') }}
           </div>
 
