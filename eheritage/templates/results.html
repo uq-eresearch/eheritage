@@ -89,12 +89,12 @@
           </div>
 
           <div class="form-group">
-            {{ search_field('period', disabled=True) }}
+            {{ search_field('period') }}
             {{ search_field('address') }}
           </div>
 
           <div class="form-group">
-            {{ select_field('building type') }}
+            {{ search_field('building type') }}
             {{ search_field('creator') }}
           </div>
 
@@ -206,9 +206,22 @@ function toggle_extended_facet_list() {
 }
 
 $(document).ready(function() {
-  $("#building_type_adv").select2();
-
   $('.show_more').on("click", toggle_extended_facet_list);
+
+  function load_select2_values(database_field, form_field) {
+    $.get('/api/values/' + database_field, function(data) {
+      var data = $.map(data.results, function(val, i) {return {"id": val.val, "text": val.val};})
+      data.sort(function(a,b) {return (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0);} );
+
+      $(form_field).select2({
+        data: data,
+        allowClear: true});
+    });
+  }
+
+  load_select2_values('architectural_styles.raw', '#period_adv');
+  load_select2_values('categories.name', '#building_type_adv');
+
 });
 </script>
 
