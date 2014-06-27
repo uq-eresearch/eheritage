@@ -125,3 +125,47 @@ function addGeoHashedRecords(query) {
 
     });
 }
+
+/**
+ * Enable a field for searching geonames places in Australia
+ *
+ * When selected, run the on_select_function
+ * @param  {[type]} input_field_selector [description]
+ * @param  {[type]} on_select_function   [description]
+ * @return {[type]}                      [description]
+ */
+function enable_placename_autocomplete(input_field_selector, on_select_function) {
+  $(input_field_selector).autocomplete({
+    source: function( request, response ) {
+      $.ajax({
+        url: "http://ws.geonames.org/searchJSON",
+        dataType: "jsonp",
+        data: {
+          featureClass: "P",
+          country: "AU",
+          style: "full",
+          maxRows: 12,
+          name_startsWith: request.term,
+          username: 'eheritage_au'
+        },
+        success: function( data ) {
+          response( $.map( data.geonames, function( item ) {
+            return {
+              label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+              value: item.value,
+              details: item
+            }
+          }));
+        }
+      });
+    },
+    minLength: 2,
+    select: on_select_function,
+    open: function() {
+      $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+    },
+    close: function() {
+      $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+    }
+  });
+}

@@ -14,16 +14,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css') }}" />
     <script src="{{ url_for('static', filename='bower_components/leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
 
+    <script src="{{ url_for('static', filename='bower_components/leaflet-hash/leaflet-hash.js') }}"></script>
+
     <!-- JQuery UI -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='locationfilter.css') }}" />
     <script src="{{ url_for('static', filename='locationfilter.js') }}"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='leaflet.draw.css') }}" />
     <script src="{{ url_for('static', filename='leaflet.draw.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='map.js') }}"></script>
 
 {% endblock %}
 
@@ -67,6 +70,9 @@ var map = L.map('map', {
   center : [-27.45, 139],
   zoom : 4
 });
+
+// enable leaflet-hash
+var hash = new L.Hash(map);
 
 // create the tile layer with correct attribution
 var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -245,33 +251,8 @@ map.on('moveend', function(e) {
 </script>
 
 <script>
-function enable_placename_autocomplete(input_field_selector) {
-  $(input_field_selector).autocomplete({
-    source: function( request, response ) {
-      $.ajax({
-        url: "http://ws.geonames.org/searchJSON",
-        dataType: "jsonp",
-        data: {
-          featureClass: "P",
-          country: "AU",
-          style: "full",
-          maxRows: 12,
-          name_startsWith: request.term,
-          username: 'eheritage_au'
-        },
-        success: function( data ) {
-          response( $.map( data.geonames, function( item ) {
-            return {
-              label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
-              value: item.value,
-              details: item
-            }
-          }));
-        }
-      });
-    },
-    minLength: 2,
-    select: function( event, ui ) {
+
+enable_placename_autocomplete("#location", function( event, ui ) {
       var geonameLocation = ui.item.details;
       var bbox = geonameLocation.bbox;
 
@@ -288,16 +269,7 @@ function enable_placename_autocomplete(input_field_selector) {
       // log( ui.item ?
       //   "Selected: " + ui.item.label :
       //   "Nothing selected, input was " + this.value);
-    },
-    open: function() {
-      $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-    },
-    close: function() {
-      $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
-    }
-  });
-}
-enable_placename_autocomplete("#location");
+    });
 
 function intersection(b1, b2) {
   if(b1.intersects(b2)) {

@@ -2,6 +2,15 @@
 
 {% block title %}Home{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <!-- JQuery UI -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+    <script src="{{ url_for('static', filename='map.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 
 
@@ -42,14 +51,13 @@
         </form>
                 </div>
                 <div class="tab-pane" id="where">
-        <form  method="get" name="search" action="/search/">
                     <div class="form-group">
-                        <input disabled type="text" class="form-control input-lg" id="where" placeholder="Place name e.g. Bendigo" name="where">
+                        <input type="text" class="form-control input-lg" id="where_field" placeholder="Place name e.g. Bendigo" name="where">
+                        <input type="hidden" id="where_coords">
                     </div>
                     <div class="form-group pull-right">
-                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                        <button type="submit" id="where_button" disabled class="btn btn-primary btn-lg">View place on map</button>
                     </div>
-        </form>
                 </div>
                 <div class="tab-pane form-inline" id="when">
         <form  method="get" name="search" action="/search/">
@@ -202,6 +210,16 @@ function carouselNormalization(carouselId) {
 }
 $(document).ready(function() {
     carouselNormalization('#frontPageCarousel');
+
+    enable_placename_autocomplete('#where_field', function (event, ui) {
+        var coords = '#13/' + ui.item.details.lat + '/' + ui.item.details.lng;
+        $('#where_coords').val(coords);
+        $('#where_button').prop('disabled', false);
+    });
+
+    $('#where_button').on('click', function() {
+        window.location = '/map' + $('#where_coords').val();
+    });
 });
 </script>
 
