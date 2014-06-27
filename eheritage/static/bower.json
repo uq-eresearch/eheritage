@@ -17,7 +17,6 @@
   "dependencies": {
     "leaflet.markercluster": "~0.4.0",
     "jquery-highlight": "3.2.0",
-    "select2": "3.5",
-    "leaflet-hash": "d73fc84d8c"
+    "select2": "3.5"
   }
 }
