@@ -164,7 +164,7 @@ def prepare_keyword_search():
         query = query.query(_all__match_and=search_term)
 
     return query
-
+from elasticutils import Q
 @app.route("/search/")
 def search():
     """Return HTML page of search results"""
@@ -188,6 +188,14 @@ def search():
         if value:
             query = query.query(**{query_type: value})
             adv_search = True
+
+    creator = request.args.get('creator', '')
+    if creator:
+        # import ipdb; ipdb.set_trace()
+        who_query = Q(creator__match_phrase=creator,
+              # extracted_names__match_phrase=creator,
+              ) #should=True)
+        query = query.query(who_query)
 
 
 ########

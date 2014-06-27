@@ -56,7 +56,7 @@
     <div class="col-sm-4">
       <input class="form-control" name="{{submit_name|to_arg}}" type="{{type}}"
              id="{{field_name|to_arg}}_adv"
-             value="{{ request.args.get(field_name|to_arg, '') }}"
+             value="{{ request.args.get(submit_name|to_arg, '') }}"
              placeholder="{{placeholder}}" {{is_disabled}}>
     </div>
 {%- endmacro %}
@@ -96,7 +96,7 @@
 
           <div class="form-group">
             {{ search_field('building type', submit_name='categories.name') }}
-            {{ search_field('creator') }}
+            {{ search_field('Person', submit_name='creator') }}
           </div>
 
           <div class="form-group">
