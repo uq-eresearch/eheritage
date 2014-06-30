@@ -242,6 +242,9 @@ def search():
         css_framework='bootstrap3',
         display_msg='displaying records <b>{start} - {end}</b> of <b>{total}</b>')
 
+    if False:
+        import elasticutils.utils
+        print elasticutils.utils.to_json(query.build_search())
 
     if request_wants_json():
         return jsonify({
