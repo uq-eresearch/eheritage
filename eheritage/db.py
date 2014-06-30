@@ -12,6 +12,16 @@ class EHeritageS(S):
             }
         }
 
+    def process_query_multi_match(self, key, val, action):
+        return {
+            'multi_match': {
+                'query': val['query'],
+                'fields': val['fields'],
+                'operator': 'and',
+                'type': 'phrase'
+            }
+        }
+
     def process_filter_exists(self, key, val, action):
         return {
             'exists': {

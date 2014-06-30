@@ -177,7 +177,6 @@ def search():
 
     advanced_search_terms = {
         'address': 'address__match_phrase',
-        'creator': 'creator__match_phrase',
         'construction_from': 'construction_start__gte',
         'construction_to': 'construction_start__lte',
     }
@@ -189,13 +188,13 @@ def search():
             query = query.query(**{query_type: value})
             adv_search = True
 
-    creator = request.args.get('creator', '')
-    if creator:
-        # import ipdb; ipdb.set_trace()
-        who_query = Q(creator__match_phrase=creator,
-              # extracted_names__match_phrase=creator,
-              ) #should=True)
+    person = request.args.get('person', '')
+    if person:
+        who_query = Q(who__multi_match={'query': person,
+            'fields':['creator', 'extracted_names']})
+
         query = query.query(who_query)
+        adv_search = True
 
 
 ########
