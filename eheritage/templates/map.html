@@ -248,6 +248,15 @@ map.on('moveend', function(e) {
     reloadRecords();
 });
 
+if(navigator.appName == 'Microsoft Internet Explorer') {
+  $('#keywords').keydown(function(e) {
+    if(e.which == 13) {
+      $(e.target).trigger('change');
+    }
+  });
+}
+
+
 </script>
 
 <script>
