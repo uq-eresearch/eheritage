@@ -3,6 +3,7 @@
   <head>
 {% block head %}
     <title>{% block title %}{{title}}{% endblock %} - Australian E-Heritage</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
@@ -12,6 +13,21 @@
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+<script src="//cdn.jsdelivr.net/modernizr/2.8.2/modernizr.min.js"></script>
+<script type="text/javascript">
+    Modernizr.load([{
+      test: Modernizr.input.placeholder,
+      nope: '//cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.0.7/jquery.placeholder.min.js',
+      complete: function () {
+        $(function() {
+          if ($().placeholder) {
+            $('input, textarea').placeholder();
+          }
+        });
+      }
+    }]);
+</script>
 
 {% endblock head %}
   </head>
