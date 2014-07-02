@@ -96,6 +96,7 @@ for (var i = 0; i < terms.length; i++) {
 {% endif %}
 
 
+{% if record.geolocation %}
 var map = L.map('record-map', {
   center : [-27.45, 139],
   zoom : 3
@@ -113,6 +114,7 @@ map.addLayer(MapQuestOpen_OSM);
 var latlng = L.latLng({{record.geolocation.lat}}, {{record.geolocation.lon}});
 L.marker(latlng).addTo(map);
 
+{% endif %}
 
 </script>
 
