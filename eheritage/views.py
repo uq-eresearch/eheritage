@@ -196,6 +196,15 @@ def search():
         query = query.query(who_query)
         adv_search = True
 
+    description = request.args.get('description', '')
+    if description:
+        description_query = Q(desc__multi_match={'query': description,
+            'fields': ['description', 'significance']})
+
+        query = query.query(description_query)
+        adv_search = True
+        session['search_term'] += ' ' + description
+
 
 ########
 ### Setup Faceting
