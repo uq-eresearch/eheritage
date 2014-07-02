@@ -191,7 +191,7 @@ def search():
     person = request.args.get('person', '')
     if person:
         who_query = Q(who__multi_match={'query': person,
-            'fields':['creator', 'extracted_names']})
+            'fields': ['creator', 'extracted_names']})
 
         query = query.query(who_query)
         adv_search = True
