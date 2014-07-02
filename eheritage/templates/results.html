@@ -90,7 +90,7 @@
           </div>
 
           <div class="form-group">
-            {{ search_field('period', submit_name='architectural_styles.raw') }}
+            {{ search_field('period', disabled=True) }}
             {{ search_field('address', placeholder='Enter address eg. Flinders Street') }}
           </div>
 
@@ -100,7 +100,7 @@
           </div>
 
           <div class="form-group">
-            {{ search_field('style', disabled=True) }}
+            {{ search_field('style', submit_name='architectural_styles.raw') }}
             {{ search_field('description', disabled=True) }}
           </div>
 
@@ -220,7 +220,7 @@ $(document).ready(function() {
     });
   }
 
-  load_select2_values('architectural_styles.raw', '#period_adv');
+  load_select2_values('architectural_styles.raw', '#style_adv');
   load_select2_values('categories.name', '#building_type_adv');
 
 });
