@@ -76,6 +76,10 @@ def create_index(index_name):
                     "vhr_number": {
                         "type": "string"
                     },
+                    "status_name": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
                     "geolocation": {
                         "type": "geo_point",
                         "lat_lon": True,
