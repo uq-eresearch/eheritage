@@ -14,7 +14,7 @@
 {% block content %}
 
 <div class="row topRow">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-10">
     <ul class="nav nav-tabs">
       <li {% if not adv_search %} class="active"{% endif %}><a href="#keyword" data-toggle="tab">Keyword</a></li>
       <li {% if adv_search %} class="active"{% endif %}><a href="#advanced" data-toggle="tab">Advanced</a></li>
@@ -27,18 +27,16 @@
 <div class="tab-content">
   <div class="tab-pane form-horizontal {% if not adv_search %} active{% endif %}" id="keyword">
     <form  method="get" name="search">
-        <div class="row">
-          <div class="col-md-9 col-md-offset-1">
-            <div class="form-group">
-              <input name="keyword" class="form-control" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Keyword search term e.g. memorial, church, Kelly">
-            </div>
-          </div>
-          <div class="col-md-1">
-              <div class="form-group">
-                <input type="submit" class="btn btn-default" value="Search">
-              </div>
-          </div>
+      <div class="col-md-9">
+        <div class="form-group">
+          <input name="keyword" class="form-control" type="text" value="{{ request.args.get('keyword', '') }}" placeholder="Keyword search term e.g. memorial, church, Kelly">
         </div>
+      </div>
+      <div class="col-md-1">
+          <div class="form-group">
+            <input type="submit" class="btn btn-default" value="Search">
+          </div>
+      </div>
     </form>
   </div>
 
@@ -131,8 +129,8 @@
 <div class="row">
     <div class="col-md-4 facets">
 {% set facets_to_display = [
-    ('Suburb', 'addresses.suburb', 'title'),
     ('State', 'state', 'upper'),
+    ('Suburb', 'addresses.suburb', 'title'),
     ('Category Group', 'categories.group', 'title'),
     ('Category', 'categories.name', 'title'),
     ('Architect', 'architects.raw', 'title')
@@ -167,23 +165,29 @@
 
 
     <div class="col-md-8 results">
-
-        {{ pagination.info|safe }}
-        <ol>
+      {{ pagination.info|safe }}
         {% for hit in results %}
-        <li>
-                <b><a href="{{ url_for('get_record', id=hit._id) }}">[{{ hit._source.state }}] {{ hit._source.name|title }}</a></b>
-                 - <a href="{{ hit._source.url }}">Source record</a>
-                 <br>
-                 {% with address = hit._source.addresses|first %}
-                    {% if address %}
-                        <div class="address">{{address.lga_name|title if address.lga_name}}, {{address.state}}{{', ' ~ address.postcode if address.postcode}}</div>
-                    {% endif %}
-                 {% endwith %}
+        <div class="row">
+        {% set icon_filename = 'svg/' + hit._source.state|lower + '.svg' -%}
 
-        </li>
+          <div class="col-md-1 icon">
+            <div class="icon icon-{{hit._source.state|lower}}"></div>
+              <!-- <img class="svg" src="{{ url_for('static', filename=icon_filename) }}" alt=""> -->
+          </div>
+          <div class="col-md-8 record-details">
+              <b><a href="{{ url_for('get_record', id=hit._id) }}">{{ hit._source.name|title }}</a></b>
+               - 
+               <a href="{{ hit._source.url }}" title="Source record"><span class="icon-link-external"></span> source record </a>
+               <br>
+               {% with address = hit._source.addresses|first %}
+                  {% if address %}
+                      <span class="address">{{address.lga_name|title if address.lga_name}},
+                      {{address.state}}{{', ' ~ address.postcode if address.postcode}}</span>
+                  {% endif %}
+               {% endwith %}
+          </div>
+        </div>
         {% endfor %}
-        </ol>
 
         {{ pagination.links|safe }}
     </div>

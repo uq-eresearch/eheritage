@@ -140,14 +140,27 @@ li.more {
 /*
  * Results List
  */
-.results li {
-    list-style: none;
-    margin: 0px;
-    padding-bottom: 5px;
+
+.results .icon {
+    font-size: 150%;
+    color: green;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.results .record-details {
+
+}
+.results a .icon-link-external {
+    font-size: 110%;
+    vertical-align: bottom;
 }
 
 .results .address {
     font-size: 13px;
+}
+.results .row {
+    padding-bottom: 10px;
 }
 
 /************
@@ -267,4 +280,7 @@ p.date-range-separator {
 #record-map {
     height: 250px;
     margin-top: 20px;
+}
+.results .re .results .address {
+    font-size: 13px;
 }
