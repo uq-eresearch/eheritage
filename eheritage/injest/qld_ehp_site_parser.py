@@ -37,8 +37,8 @@ def extract_dates(date_string):
 
 def transform_to_eheritage(data_in):
     data_out = {}
-    data_out['group'] = data_in.get('Place Type', [])
-    data_out['place_category'] = data_in.get('Place Category', [])
+    data_out['categories.group'] = data_in.get('Place Category', [])
+    data_out['categories.name'] = data_in.get('Place Type', [])
     start, end = extract_dates(data_in.get('Construction Period', [''])[0])
     data_out['construction_start'] = start
     data_out['construction_end'] = end
