@@ -174,9 +174,9 @@
             <div class="icon icon-{{hit._source.state|lower}}"></div>
               <!-- <img class="svg" src="{{ url_for('static', filename=icon_filename) }}" alt=""> -->
           </div>
-          <div class="col-md-8 record-details">
+          <div class="col-md-11 record-details">
               <b><a href="{{ url_for('get_record', id=hit._id) }}">{{ hit._source.name|title }}</a></b>
-               - 
+               -
                <a href="{{ hit._source.url }}" title="Source record"><span class="icon-link-external"></span> source record </a>
                <br>
                {% with address = hit._source.addresses|first %}
