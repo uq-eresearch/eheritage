@@ -170,11 +170,9 @@
         <div class="row">
         {% set icon_filename = 'svg/' + hit._source.state|lower + '.svg' -%}
 
-          <div class="col-md-1 icon">
+          <div class="col-md-12 record-details">
             <div class="icon icon-{{hit._source.state|lower}}"></div>
-              <!-- <img class="svg" src="{{ url_for('static', filename=icon_filename) }}" alt=""> -->
-          </div>
-          <div class="col-md-11 record-details">
+            <div>
               <b><a href="{{ url_for('get_record', id=hit._id) }}">{{ hit._source.name|title }}</a></b>
                -
                <a href="{{ hit._source.url }}" title="Source record"><span class="icon-link-external"></span> source record </a>
@@ -185,6 +183,7 @@
                       {{address.state}}{{', ' ~ address.postcode if address.postcode}}</span>
                   {% endif %}
                {% endwith %}
+              </div>
           </div>
         </div>
         {% endfor %}

@@ -146,14 +146,17 @@ li.more {
 }
 
 .results .icon {
-    font-size: 150%;
+    font-size: 180%;
     color: green;
     text-align: center;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
+    padding-left: 10px;
+    padding-right: 10px;
+    float: left;
 }
 
 .results .record-details {
-
+    float: left;
 }
 .results a .icon-link-external {
     font-size: 110%;
