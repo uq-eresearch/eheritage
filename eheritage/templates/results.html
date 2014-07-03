@@ -154,7 +154,7 @@
                 {% for term in facets[facet].terms|sort(attribute='term') %}
                   {{ facet_item(term, facet, case, hidden=True) }}
                 {% endfor %}
-                <li><a href="#" class="show_more">Show more</a></li>
+                <li class="action"><a href="#" class="show_more">Show more</a></li>
               {% endif %}
             {% endif %}
           </ol>
@@ -208,6 +208,11 @@ function toggle_extended_facet_list() {
   } else {
     $(this).text('Show more')
   }
+
+  // Scroll to the top of this facet list
+  $('html, body').animate({
+      scrollTop: parent.offset().top
+  }, 500);
 }
 
 $(document).ready(function() {

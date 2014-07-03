@@ -137,9 +137,13 @@ li.more {
     border-right: 1px solid #e2e2e2;
 }
 
-/*
+/***************
  * Results List
- */
+ ***************/
+
+.facets li.action {
+    text-align: center;
+}
 
 .results .icon {
     font-size: 150%;
@@ -175,9 +179,9 @@ li.more {
   background-color: rgba(30, 144, 255, 0.6);
 }
 
-/*
+/*************
  * MAP STYLES
- */
+ *************/
 #map { height: 550px; }
 
 .info {
