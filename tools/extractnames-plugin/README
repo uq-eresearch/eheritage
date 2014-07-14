@@ -1,0 +1,20 @@
+The elasticsearch extract names plugin does a Named-entity recognition of names of persons. It scans all fields of the document and stores all retrieved names in the field 'extracted_names'
+
+1)
+To execute the name extraction on a document call it like so:
+
+curl -XPOST 'http://localhost:9200/eheritage/heritage_place/QLD-600073/_extractnames'
+
+2)
+To build to plugin execute maven:
+
+mvn clean package
+
+The build should produce the file extractnames-plugin/target/releases/example-plugin-1.0-SNAPSHOT.zip
+
+3)
+To install the plugin into elasticsearch use the plugin script that comes with elasticsearch (bin folder)
+
+./plugin -u file:///.../extractnames-plugin/target/releases/example-plugin-1.0-SNAPSHOT.zip --install extract-names-plugin
+
+
