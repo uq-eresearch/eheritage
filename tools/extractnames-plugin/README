@@ -10,11 +10,11 @@ To build to plugin execute maven:
 
 mvn clean package
 
-The build should produce the file extractnames-plugin/target/releases/example-plugin-1.0-SNAPSHOT.zip
+The build should produce the file target/releases/extractnames-plugin-1.0-SNAPSHOT.zip 
 
 3)
 To install the plugin into elasticsearch use the plugin script that comes with elasticsearch (bin folder)
 
-./plugin -u file:///.../extractnames-plugin/target/releases/example-plugin-1.0-SNAPSHOT.zip --install extract-names-plugin
+./plugin -u file:///.../extractnames-plugin/target/releases/extractnames-plugin-1.0-SNAPSHOT.zip --install extract-names-plugin
 
 
