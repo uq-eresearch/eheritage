@@ -1,0 +1,20 @@
+{
+  "author": "Andre <a.gebers@uq.edu.au>",
+  "name": "extractnames",
+  "description": "extracts person names from qld heritage place entries",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/uq-eresearch/eheritage.git"
+  },
+  "dependencies": {
+    "elasticsearch" : "2.2.0",
+    "async" : "0.9.0",
+    "superagent" : "0.18.2"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}

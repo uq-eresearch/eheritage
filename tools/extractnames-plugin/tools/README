@@ -1,0 +1,8 @@
+tool to extract names from all qld heritage places. 
+
+1) install dependencies
+npm install -l
+
+2) run
+node extractnames.js
+
