@@ -36,6 +36,8 @@ public class ExtractNamesHandler implements RestHandler {
 
   private final Client client;
 
+  private final NameExtractor extractor = new NameExtractor();
+
   private static final class Fields {
     static final XContentBuilderString _INDEX = new XContentBuilderString("_index");
     static final XContentBuilderString _TYPE = new XContentBuilderString("_type");
@@ -43,7 +45,6 @@ public class ExtractNamesHandler implements RestHandler {
     static final XContentBuilderString _VERSION = new XContentBuilderString("_version");
     static final XContentBuilderString _MSG = new XContentBuilderString("_msg");
     static final XContentBuilderString _EXTRACTED = new XContentBuilderString("_extracted");
-    
   }
 
   @Inject
@@ -149,7 +150,6 @@ public class ExtractNamesHandler implements RestHandler {
   }
 
   private List<String> extractNames(Map<String, Object> fields) {
-    NameExtractor extractor = new NameExtractor();
     List<String> names = Lists.newArrayList();
     for(Map.Entry<String, Object> me : fields.entrySet()) {
       String key = me.getKey();
