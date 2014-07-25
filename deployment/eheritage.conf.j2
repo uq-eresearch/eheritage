@@ -1,0 +1,7 @@
+description "Australian e-Heritage Portal Application Server"
+start on runlevel [2345]
+stop on runlevel [06]
+respawn
+respawn limit 10 5
+chdir /home/ubuntu/eheritage/
+exec /home/ubuntu/.virtualenvs/eheritage/bin/uwsgi --die-on-term -s /tmp/uwsgi.sock -w eheritage:app --chmod-socket=666

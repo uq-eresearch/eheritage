@@ -1,0 +1,110 @@
+---
+- name: Configure E-Heritage server
+  user: ubuntu
+  sudo: True
+  hosts: all
+
+  vars:
+  - project_root: /opt/eheritage
+  - project_code: "{{ project_root }}/code"
+  - project_name: eheritage
+  - project_repo: git://github.com/uq-eresearch/eheritage.git
+  vars_files:
+  - eheritage-vars.yml
+
+  roles:
+  - ansible-elasticsearch
+
+  handlers:
+  - name: reload nginx
+    action: service name=nginx state=reloaded
+
+  - name: restart nginx
+    action: service name=nginx state=restarted enabled=yes
+
+  - name: restart application
+    action: restart name={{project_name}} state=restarted
+
+  tasks:
+
+  - name: Ensure required ubuntu packages are installed
+    action: apt pkg={{item}} state=present
+    with_items:
+      - python-virtualenv
+      - uwsgi
+      - nginx
+      - git
+      - python-dev
+      - libxml2-dev
+      - libxslt-dev
+      - lib32z1-dev
+
+
+
+
+
+
+### Create users and permissions and download our code
+  - name: Ensure eheritage group exists
+    group: name={{ project_name }} state=present system=yes
+
+  - name: Ensure eheritage user exists
+    user: name={{ project_name }} group={{ project_name }} shell=/bin/false system=yes state=present createhome=no
+
+  - name: Create project directory
+    file: name={{ project_root }} state=directory owner={{ project_name }} group={{ project_name }} mode=755
+
+  - name: Create code directory
+    file: name={{ project_code }} state=directory owner={{ project_name }} group={{ project_name }} mode=755
+
+
+
+## Deployment
+  - name: Pull sources from the repository
+    git: repo={{ project_repo }} dest={{ project_code }}
+
+  - name: Ensure project python requirements are installed into virtualenv
+    pip: requirements={{ project_code }}/requirements.txt virtualenv={{ project_root }}/environment
+
+
+
+#  - name: Ensure eheritage upstart service exists
+#    template: src=eheritage.conf.j2 dest=/etc/init/eheritage.conf backup=yes mode=0644
+
+
+## Configure Nginx
+  - name: Create the Nginx configuration file
+    template: src=nginx_site_config.j2
+              dest=/etc/nginx/sites-available/{{ project_name }}
+              backup=yes
+    notify: reload nginx
+
+  - name: Ensure the default nginx site is disabled
+    file: path=/etc/nginx/sites-enabled/default state=absent
+    notify: reload nginx
+
+  - name: Ensure that the nginx application site is enabled
+    file: src=/etc/nginx/sites-available/{{ application_name }}
+          dest=/etc/nginx/sites-enabled/{{ application_name }}
+          state=link
+    notify: reload nginx
+
+  - name: Ensure nginx is running.
+    service: name=nginx enabled=yes state=started
+
+### Don't need this elastic search stuff, since we're using a whole playbook for it
+#
+  # - name: Add oracle java installer apt repo
+  #   apt_repository: repo=ppa:webupd8team/java update_cache=no
+
+  # - name: Add elasticsearch repo public key
+  #   apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+
+  # - name: Add elasticsearch repo
+  #   apt_repository: repo="deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main" update_cache=no
+
+  # - name: Auto-accept oracle license
+  #   debconf: name='oracle-java7-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+  # - name: ensure elasticsearch is running
+  #   service: name=elasticsearch enabled=yes state=started
