@@ -44,3 +44,25 @@ Run the e-Heritage portal development server:
     ./run.py
 
 The development server will reload automatically when anything is edited.
+
+
+Production Deployment
+---------------------
+
+An ansible playbook is supplied to deploy the e-Heritage Portal and all required software to a fresh Ubuntu 14.04 instance.
+
+The playbook depends on some external git repositories included as submodules, these must be downloaded first:
+
+    git submodule update --init
+
+Install ansible system-wide on Ubuntu:
+
+    sudo apt-get install ansible
+
+Or into a virtualenv:
+
+    pip install ansible
+
+Run the playbook against your remote server:
+
+    ansible-playbook -v -i deployment/hosts deployment/server_setup.yml
