@@ -7,6 +7,7 @@
   vars:
   - project_root: /opt/eheritage
   - project_code: "{{ project_root }}/code"
+  - project_venv: "{{ project_root }}/environment"
   - project_name: eheritage
   - project_repo: git://github.com/uq-eresearch/eheritage.git
   vars_files:
@@ -26,12 +27,12 @@
     action: restart name={{project_name}} state=restarted
 
   tasks:
-
   - name: Ensure required ubuntu packages are installed
     action: apt pkg={{item}} state=present
     with_items:
       - python-virtualenv
       - uwsgi
+      - uwsgi-plugin-python
       - nginx
       - git
       - python-dev
@@ -41,10 +42,7 @@
 
 
 
-
-
-
-### Create users and permissions and download our code
+  ### Create users and permissions and download our code
   - name: Ensure eheritage group exists
     group: name={{ project_name }} state=present system=yes
 
@@ -69,14 +67,19 @@
 
 
   - name: Ensure eheritage upstart service exists
-    template: src=eheritage.conf.j2 dest=/etc/init/eheritage.conf backup=yes mode=0644
+    template: src=eheritage.conf.j2 dest=/etc/init/eheritage.conf
+              backup=yes mode=0644
+    notify: restart application
+
+  - name: Ensure eheritage upstart service is running automatically
+    service: name=eheritage enabled=yes state=started
 
 
-## Configure Nginx
+  ## Configure Nginx
   - name: Create the Nginx configuration file
-    template: src=nginx_site_config.j2
+    template: src=eheritage-nginx.j2
               dest=/etc/nginx/sites-available/{{ project_name }}
-              backup=yes
+              backup=yes mode=644
     notify: reload nginx
 
   - name: Ensure the default nginx site is disabled
@@ -84,8 +87,8 @@
     notify: reload nginx
 
   - name: Ensure that the nginx application site is enabled
-    file: src=/etc/nginx/sites-available/{{ application_name }}
-          dest=/etc/nginx/sites-enabled/{{ application_name }}
+    file: src=/etc/nginx/sites-available/{{ project_name }}
+          dest=/etc/nginx/sites-enabled/{{ project_name }}
           state=link
     notify: reload nginx
 

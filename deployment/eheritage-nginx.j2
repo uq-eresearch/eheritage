@@ -1,0 +1,27 @@
+server {
+    listen 80 default;
+
+    server_name eheritage.metadata.net;
+    keepalive_timeout 5;
+
+    access_log /var/log/nginx/eheritage.log;
+    error_log /var/log/nginx/eheritage_error.log;
+
+# path for static files
+    root /home/ubuntu/eheritage/eheritage/static;
+
+    location / {
+# checks for static file, if not found proxy to app
+        try_files $uri @proxy_to_app;
+    }
+
+    location /static {
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/uwsgi.sock;
+    }
+
+}

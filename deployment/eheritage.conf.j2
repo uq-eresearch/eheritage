@@ -3,5 +3,7 @@ start on runlevel [2345]
 stop on runlevel [06]
 respawn
 respawn limit 10 5
-chdir /home/ubuntu/eheritage/
-exec uwsgi --die-on-term -s /tmp/uwsgi.sock -w eheritage:app --chmod-socket=666
+setuid eheritage
+setgid eheritage
+chdir {{project_code}}
+exec uwsgi --die-on-term -s /tmp/uwsgi.sock --plugin python --virtualenv {{project_venv}} -w eheritage:app --chmod-socket=666
