@@ -14,7 +14,7 @@
   - eheritage-vars.yml
 
   roles:
-#  - ansible-elasticsearch
+  - ansible-elasticsearch
 
   handlers:
   - name: reload nginx
@@ -63,6 +63,7 @@
 ## Deployment
   - name: Pull sources from the repository
     git: repo={{ project_repo }} dest={{ project_code }}
+    notify: restart application
 
   - name: Ensure project python requirements are installed into virtualenv
     pip: requirements={{ project_code }}/requirements.txt virtualenv={{ project_root }}/environment
@@ -81,6 +82,10 @@
   - name: Ensure rsyslog logs app errors to a file
     template: src=rsyslog.j2 dest=/etc/rsyslog.d/30-eheritage.conf mode=0644 owner=root group=root
     notify: restart rsyslog
+
+  - name: Setup eheritage log rotation
+    template: src=eheritage-logrotate.j2 dest=/etc/logrotate.d/eheritage owner=root group=root mode=0644
+
 
   ## Configure Nginx
   - name: Create the Nginx configuration file
