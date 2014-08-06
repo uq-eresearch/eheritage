@@ -140,10 +140,9 @@ def update_alias(index_name):
 def delete_index(index_name):
     """Delete the entire index of heritage places - DANGER!!
     """
-    if not index_name:
-        index_name = current_app.config['ES_INDEX']
+    connection = es.get_es()
 
-    return es.get_es().indices.delete(index_name)
+    return connection.indices.delete(index_name)
 
 
 def get_index_version():
