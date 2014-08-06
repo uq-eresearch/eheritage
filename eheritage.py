@@ -10,7 +10,6 @@ Usage:
     eheritage.py create_index <index_name>
     eheritage.py delete_index <index_name>
     eheritage.py update_alias <index_name>
-    eheritage.py list_alias
     eheritage.py reindex <source> <target>
     eheritage.py -h | --help
     eheritage.py --version
