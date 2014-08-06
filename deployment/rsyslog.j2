@@ -1,0 +1,7 @@
+# See https://hynek.me/articles/taking-some-pain-out-of-python-logging/
+
+if $programname == '{{project_name}}' then {
+    action(type="omfile" file="/var/log/{{project_name}}/{{project_name}}.log")
+}
+if $programname == '{{project_name}}' then stop
+#& stop

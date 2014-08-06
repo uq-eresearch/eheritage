@@ -14,7 +14,7 @@
   - eheritage-vars.yml
 
   roles:
-  - ansible-elasticsearch
+#  - ansible-elasticsearch
 
   handlers:
   - name: reload nginx
@@ -24,7 +24,10 @@
     action: service name=nginx state=restarted enabled=yes
 
   - name: restart application
-    action: restart name={{project_name}} state=restarted
+    action: service name={{project_name}} state=restarted
+
+  - name: restart rsyslog
+    action: service name=rsyslog state=restarted
 
   tasks:
   - name: Ensure required ubuntu packages are installed
@@ -74,6 +77,10 @@
   - name: Ensure eheritage upstart service is running automatically
     service: name=eheritage enabled=yes state=started
 
+  ## Setup Logging
+  - name: Ensure rsyslog logs app errors to a file
+    template: src=rsyslog.j2 dest=/etc/rsyslog.d/30-eheritage.conf mode=0644 owner=root group=root
+    notify: restart rsyslog
 
   ## Configure Nginx
   - name: Create the Nginx configuration file

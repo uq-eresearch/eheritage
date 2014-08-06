@@ -6,4 +6,5 @@ respawn limit 10 5
 setuid eheritage
 setgid eheritage
 chdir {{project_code}}
-exec uwsgi --die-on-term -s /tmp/uwsgi.sock --plugin python --virtualenv {{project_venv}} -w eheritage:app --chmod-socket=666
+exec uwsgi --die-on-term -s /tmp/{{project_name}}.sock --plugin python --plugin syslog --virtualenv {{project_venv}} --log-syslog={{project_name}} -w {{project_name}}:app --chmod-socket=666
+

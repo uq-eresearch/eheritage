@@ -21,7 +21,7 @@ server {
 
     location @proxy_to_app {
         include uwsgi_params;
-        uwsgi_pass unix:/tmp/uwsgi.sock;
+        uwsgi_pass unix:/tmp/{{project_name}}.sock;
     }
 
 }
