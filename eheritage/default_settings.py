@@ -9,4 +9,9 @@ ES_INDEX = "eheritage"
 ES_ALIAS = "eheritage"
 ES_DOCTYPE = "heritage_place"
 
-# Logging Settings
+# Backup Settings
+BACKUP_DIR = "/mnt/backups"
+REPOSITORY_NAME = "eheritage"
+
+# Misc
+GOOGLE_ANALYTICS_ID = "UA-53679168-1"
