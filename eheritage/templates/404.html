@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block body %}
+
+<div class="main-content">
+    <div class="container">
+  <h1>Page Not Found (404)</h1>
+  <p>What you were looking for is not there.</p>
+  <p><a href="{{ url_for('index') }}">Return to our front page</a> and try another tack.</p>
+  </div>
+</div>
+{% endblock %}

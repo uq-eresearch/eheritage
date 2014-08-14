@@ -71,3 +71,4 @@ except IOError:
 
 from eheritage import template_extensions
 from eheritage import views
+from eheritage import error_handlers
