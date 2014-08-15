@@ -37,6 +37,7 @@
 {% endblock head %}
   </head>
   <body>
+{% block body %}
     <div class="navbar navbar-static-top navbar-inverse">
         <div class="container">
             <a href="/" class="navbar-brand">Australian e-Heritage Portal</a>
@@ -54,8 +55,8 @@
             </div>
             <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
                 <span class="glyphicon glyphicon-align-justify"></span>
-            </button
-        </div>>
+            </button>
+        </div>
     </div>
 
 <div class="main-content">
@@ -86,6 +87,8 @@
         <p class="copyright">&copy; 2014 <a href="http://www.uq.edu.au">The University of Queensland</a> / <a href="https://www.fedarch.org/">FAIMS</a></p>
     </div>
 </div>
+
+{% endblock body %}
 
 {% if config.GOOGLE_ANALYTICS_ID %}
 <script>
