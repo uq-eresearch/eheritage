@@ -1,7 +1,6 @@
 *.pyc
 .vagrant
 *.sublime-workspace
-eheritage/static/bower_components/
 data/*
 SECRET
 devconfig.cfg
