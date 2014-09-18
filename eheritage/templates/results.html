@@ -135,6 +135,7 @@
     ('Category', 'categories.name', 'title'),
     ('Architect', 'architects.raw', 'title')
 ] -%}
+    {% if facets %}
         {% for title, facet, case in facets_to_display %}
       <div class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
@@ -161,11 +162,14 @@
           </div>
       </div>
         {% endfor %}
+      {% endif %}
     </div>
 
 
     <div class="col-md-8 results">
-      {{ pagination.info|safe }}
+        {% if pagination %}
+        {{ pagination.info|safe }}
+        {% endif %}
         {% for hit in results %}
         <div class="row">
         {% set icon_filename = 'svg/' + hit._source.state|lower + '.svg' -%}
@@ -188,7 +192,9 @@
         </div>
         {% endfor %}
 
+        {% if pagination %}
         {{ pagination.links|safe }}
+        {% endif %}
     </div>
 </div>
 

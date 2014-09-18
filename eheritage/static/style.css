@@ -15,16 +15,6 @@ html {
     overflow-y: scroll;
 }
 
-
-/*
- * EMBER STYLES
- */
-.ember-view.active {
-    font-weight: bold;
-
-}
-
-
 /*
  * jQuery-highlight styles
  */
@@ -223,25 +213,13 @@ p.date-range-separator {
     font-size: 70%;
 }
 
-.search-widget {
-    background-color: antiquewhite;
+
+ul.nav-tabs.frontsearch {
+    margin-bottom: 15px;
 }
 
-.search-widget {
-    border: 2px solid black;
-    margin: 15px 0px 30px 0px;
-}
-.search-widget .sidebar {
-    border-right: 2px solid black;
-    background-color: aliceblue;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
-
-.search-widget .search-tools {
-    padding-top: 20px;
-    padding-bottom: 20px;
+.frontsearch.tab-content {
+    margin-bottom: 20px;
 }
 
 /**************
