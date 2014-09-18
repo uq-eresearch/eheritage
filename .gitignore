@@ -4,3 +4,7 @@
 data/*
 SECRET
 devconfig.cfg
+node_modules
+eheritage.sublime-project
+.webassets-cache
+.ipynb_checkpoints
