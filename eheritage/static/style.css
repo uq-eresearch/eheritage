@@ -79,6 +79,12 @@ li.more {
 /*
  * Facet sidebar
  */
+@media (max-width: 767px) {
+    .facets {
+        display:none;
+    }
+}
+
 .facets li {
     font-size: 12px;
     list-style: none;
@@ -114,9 +120,6 @@ li.more {
     float: left;
 }
 
-.results .record-details {
-    float: left;
-}
 .results a .icon-link-external {
     font-size: 110%;
     vertical-align: bottom;

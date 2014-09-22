@@ -127,7 +127,15 @@
   </li>
 {%- endmacro %}
 <div class="row">
-    <div class="col-md-4 facets">
+  <div class=" col-xs-12">
+    <div class="visible-xs-block">
+    <button class="btn btn-default" data-toggle="collapse" data-target="div.facets">Display facets</button>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-4 col-lg-3 facets">
 {% set facets_to_display = [
     ('State', 'state', 'upper'),
     ('Suburb', 'addresses.suburb', 'title'),
@@ -166,7 +174,7 @@
     </div>
 
 
-    <div class="col-md-8 results">
+    <div class="col-xs-12 col-sm-8 col-lg-9 results">
         {% if pagination %}
         {{ pagination.info|safe }}
         {% endif %}
