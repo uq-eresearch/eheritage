@@ -41,26 +41,32 @@
   </head>
   <body>
 {% block body %}
-    <div class="navbar navbar-static-top navbar-inverse">
-        <div class="container">
+      <div class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
             <a href="/" class="navbar-brand">Australian e-Heritage Portal</a>
 
-            <div class="collapse navbar-collapse navHeaderCollapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/search/?{{request.query_string}}">Search</a></li>
-                    <li><a href="/map?{{request.query_string}}">Map</a></li>
-                    <li><a href="/timeline">Timeline</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact us</a></li>
-                    <li><a href="/related-links">Related links</a></li>
-                </ul>
-            </div>
-            <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
-                <span class="glyphicon glyphicon-align-justify"></span>
+            <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
+          </div>
+
+          <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+                  <!-- <li><a href="/">Home</a></li> -->
+                  <li><a href="/search/?{{request.query_string}}">Search</a></li>
+                  <li><a href="/map?{{request.query_string}}">Map</a></li>
+                  <li><a href="/timeline">Timeline</a></li>
+                  <li><a href="/about">About</a></li>
+                  <li><a href="/contact">Contact us</a></li>
+                  <li><a href="/related-links">Related links</a></li>
+              </ul>
+          </div>
         </div>
-    </div>
+      </div>
 
 <div class="main-content">
     <div class="container">

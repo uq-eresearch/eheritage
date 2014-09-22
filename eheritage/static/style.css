@@ -33,39 +33,8 @@ body {
  * Top Navbar
  */
 
-.header {
-    background-color: rgba(50,50,50,0.9);
-    padding-bottom: 2px;
-    border-bottom: 2px solid black;
-    margin-bottom: 10px;
-}
-
-.header .navbar-brand {
-    font-weight: 600;
-    font-size: 2.750rem;
-    color: white;
-    text-shadow: 2px 2px 2px rgba(0,0,0,0.42);
-    padding: 15px 0px 0px 0px;
-    height: auto;
-}
-
-.header .navbar {
-    margin-bottom: 0px;
-    min-height: 45px;
-}
-
-.header .nav-pills>li>a {
-    border-radius: 0px;
-    padding-bottom: 5px;
-}
-.header .nav-pills>li>a:hover, .header .nav-pills>li>a:focus {
-    background-color: transparent;
-    border-bottom: 4px solid white;
-}
-
-.header .nav-pills a {
-    font-size: 16px;
-    color: white;
+.navbar-nav>li>a {
+    font-size: 96%;
 }
 
 .main-content {
@@ -137,7 +106,7 @@ li.more {
 
 .results .icon {
     font-size: 180%;
-    color: green;
+    color: #428bca;
     text-align: center;
     /*margin: 0 auto;*/
     padding-left: 10px;
