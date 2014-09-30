@@ -1,0 +1,22 @@
+{
+  "name": "eheritage",
+  "version": "0.0.0",
+  "description": "eheritage ========= The aim of this project is to produce an Australian Heritage Portal, the main feature being a federated search across the Queensland and Victorian Heritage Registers. This is being developed with aim to expand to include all relevant heritage registers across Australia.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/uq-eresearch/eheritage.git"
+  },
+  "author": "Damien Ayers (d.ayers@uq.edu.au)",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/uq-eresearch/eheritage/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-watch": "~0.6.1"
+  }
+}
