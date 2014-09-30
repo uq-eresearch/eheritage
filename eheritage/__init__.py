@@ -18,6 +18,12 @@ app.config.from_envvar('EHERITAGE_SETTINGS', silent=True)
 es = ElasticSearch(app)
 
 
+def create_app(config_name):
+    app = Flask(__name__)
+
+    from main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+
 
 ### Setup Logging
 # if not app.debug:
@@ -35,14 +41,21 @@ for logger in loggers:
 # When I'm ready to fix this with bower and stuff
 # look at http://adambard.com/blog/fresh-flask-setup/
 
-environment = Environment(app)
+assets = Environment(app)
+assets.directory = 'eheritage/static/'
+assets.url = '/static/'
+assets.debug = True
+
 js = Bundle('app.js',
     filters='jsmin', output='gen/packed.js')
-environment.register('js_all', js)
+assets.register('js_all', js)
 
-scss = Bundle('*.scss', filters='scss', output='gen/scss.css')
-css = Bundle('style.css', scss,
-    filters='pyscss,cssmin', output='gen/all.css')
+# scss = Bundle('*.scss', filters='scss', output='gen/scss.css')
+# css = Bundle('style.css', # scss,
+#     filters='pyscss,cssmin', output='gen/style.css')
+
+# assets.register('css_all', css)
+
 
 app.json_encoder = IterableAwareEncoder
 
