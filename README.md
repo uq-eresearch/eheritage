@@ -41,7 +41,7 @@ And use development settings automatically when activating your virtualenv by ad
 
 Run the e-Heritage portal development server:
 
-    ./run.py
+    ./manage.py runserver
 
 The development server will reload automatically when anything is edited.
 
