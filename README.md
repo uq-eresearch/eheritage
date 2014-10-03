@@ -45,6 +45,13 @@ Run the e-Heritage portal development server:
 
 The development server will reload automatically when anything is edited.
 
+Management tasks
+----------------
+The `eheritage.py` script can be used for several maintenance tasks including:
+* Loading data from QLD, Victoria
+* Reindexing data
+* Creating and deleting indexes
+
 
 Production Deployment
 ---------------------
