@@ -49,14 +49,15 @@ curl -XPUT "localhost:9200/_snapshot/eheritage_backup/snapshot_1?wait_for_comple
 
 
 # List Snapshots
-curl -XGET 'http://localhost:9200/_snapshot/initial_data/_all?pretty'
+curl -XGET 'http://localhost:9200/_snapshot/eheritage_backup/_all?pretty'
 
 exit
 
 
 # Restore from Snapshot
 
-curl -XPOST "localhost:9200/_snapshot/initial_data/snapshot_1/_restore"
+curl -XPOST "localhost:9200/_snapshot/eheritage_backup/snapshot_1/_restore?wait_for_completion=true"
+
 
 # Delete Snapshot
 curl -XDELETE "localhost:9200/_snapshot/eheritage_backup/snapshot_1"
@@ -71,3 +72,20 @@ tar czf ~/eheritage_backup.tar.gz eheritage_backup/
 
 
 sudo apt-get install python-swiftclient
+
+
+# List Indexes
+curl 'localhost:9200/_cat/indices?v'
+curl 'localhost:9200/_cat/aliases?v'
+
+
+curl -XPUT 'http://localhost:9200/_snapshot/eheritage_backup' -d '{
+    "type": "fs",
+    "settings": {
+        "location": "/data/snapshots/backups/eheritage_backup",
+        "compress": true
+    }
+}'
+
+
+

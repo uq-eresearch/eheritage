@@ -4,12 +4,6 @@
   sudo: True
   hosts: all
 
-  vars:
-  - project_root: /opt/eheritage
-  - project_code: "{{ project_root }}/code"
-  - project_venv: "{{ project_root }}/environment"
-  - project_name: eheritage
-  - project_repo: git://github.com/uq-eresearch/eheritage.git
   vars_files:
   - eheritage-vars.yml
 
@@ -59,6 +53,9 @@
     file: name={{ project_code }} state=directory owner={{ project_name }} group={{ project_name }} mode=755
 
 
+
+  - name: Ensure Elasticsearch is running.
+    service: name=elasticsearch enabled=yes state=started
 
 ## Deployment
   - name: Pull sources from the repository

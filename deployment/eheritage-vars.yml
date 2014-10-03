@@ -1,4 +1,12 @@
 ---
+
+
+project_root: /opt/eheritage
+project_code: "{{ project_root }}/code"
+project_venv: "{{ project_root }}/environment"
+project_name: eheritage
+project_repo: git://github.com/uq-eresearch/eheritage.git
+
 # Elasticsearch Ansible Variables
 
 elasticsearch_version: 1.3.0
@@ -9,6 +17,7 @@ elasticsearch_node_max_local_storage_nodes: 1
 elasticsearch_index_mapper_dynamic: "true"
 elasticsearch_memory_bootstrap_mlockall: "true"
 elasticsearch_install_java: "true"
+elasticsearch_data_dir: /mnt/elasticsearch
 elasticsearch_plugins:
  - { name: 'elasticsearch/marvel/latest' }
  - { name: 'extractnames', url: 'https://github.com/uq-eresearch/eheritage/releases/download/v0.9/extractnames-plugin-1.0-SNAPSHOT.zip' }
