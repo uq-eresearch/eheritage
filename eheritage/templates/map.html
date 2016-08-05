@@ -6,8 +6,9 @@
     {{ super() }}
 
     <!-- Leaflet -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=QGmSLEwsjPOeka0rgy3xUzoua5SgktGc"></script>
 
     <!-- Leaflet MarkerCluster -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />
@@ -67,23 +68,13 @@
 var MAX_LOCATIONS = 1000;
 
 var map = L.map('map', {
+  layers : MQ.mapLayer(),
   center : [-27.45, 139],
   zoom : 4
 });
 
 // enable leaflet-hash
 var hash = new L.Hash(map);
-
-// create the tile layer with correct attribution
-var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
-var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-    subdomains: '1234'
-});
-map.attributionControl.setPrefix('');
-map.addLayer(MapQuestOpen_OSM);
 
 var locationFilter;
 L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw location filter bounds';
