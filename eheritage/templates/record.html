@@ -7,8 +7,9 @@
     {{ super() }}
 <script src="{{ url_for('static', filename='jquery.highlight.js') }}"></script>
     <!-- Leaflet -->
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=QGmSLEwsjPOeka0rgy3xUzoua5SgktGc"></script>
 
 {% endblock %}
 
@@ -98,19 +99,10 @@ for (var i = 0; i < terms.length; i++) {
 
 {% if record.geolocation %}
 var map = L.map('record-map', {
+  layers : MQ.mapLayer(),
   center : [-27.45, 139],
   zoom : 3
 });
-// create the tile layer with correct attribution
-var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
-var MapQuestOpen_OSM = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-    subdomains: '1234'
-});
-map.attributionControl.setPrefix('');
-map.addLayer(MapQuestOpen_OSM);
 
 var latlng = L.latLng({{record.geolocation.lat}}, {{record.geolocation.lon}});
 L.marker(latlng).addTo(map);
