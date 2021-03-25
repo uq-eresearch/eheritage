@@ -3,7 +3,7 @@ Flask-Assets==0.9
 Flask-WTF==0.9.5
 Jinja2==2.7.2
 MarkupSafe==0.19
-PyYAML==3.11
+PyYAML==5.4
 WTForms==1.0.5
 Werkzeug==0.9.4
 ansible==1.5.3
