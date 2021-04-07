@@ -6,7 +6,7 @@ MarkupSafe==0.19
 PyYAML==3.11
 WTForms==1.0.5
 Werkzeug==0.9.4
-ansible==1.5.3
+ansible==2.10.0
 argparse==1.2.1
 args==0.1.0
 clint==0.3.6
