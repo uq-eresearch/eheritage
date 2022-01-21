@@ -17,7 +17,7 @@ elasticutils==0.9.1
 flask-paginate==0.2.1
 inflect==0.2.4
 ipdb==0.8
-ipython==2.0.0
+ipython==7.16.3
 itsdangerous==0.24
 lxml==3.3.3
 paramiko==1.13.0
