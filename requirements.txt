@@ -19,7 +19,7 @@ inflect==0.2.4
 ipdb==0.8
 ipython==2.0.0
 itsdangerous==0.24
-lxml==3.3.3
+lxml==4.9.1
 paramiko==1.13.0
 peewee==2.2.2
 pycrypto==2.6.1
